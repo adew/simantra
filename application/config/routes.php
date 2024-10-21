@@ -1,5 +1,5 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 /*
 | -------------------------------------------------------------------------
@@ -109,6 +109,7 @@ $route['user/page/dokumen-keluar/insert'] = 'user/dokumen_keluar/insert';
 $route['user/page/dokumen-keluar/update'] = 'user/dokumen_keluar/update';
 $route['user/page/dokumen-keluar/delete/(:num)'] = 'user/dokumen_keluar/delete/$1';
 $route['user/page/dokumen-keluar/get/(:num)'] = 'user/dokumen_keluar/get_data/$1';
+$route['user/page/dokumen-keluar/status'] = 'user/dokumen_keluar/status';
 
 // Dokumen Masuk
 $route['user/page/dokumen-masuk'] = 'user/dokumen_masuk';

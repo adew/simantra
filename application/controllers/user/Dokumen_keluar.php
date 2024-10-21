@@ -108,7 +108,7 @@ class Dokumen_keluar extends CI_Controller
 			$row[] = '<center>' . $no++ . '</center>';
 
 			$jns_dokumen = $li['jns_kategori'] . '<br>';
-			$jns_dokumen .= $li['jns_dokumen'] != 'Biasa' ? '<span class="badge badge-danger"><i class="fa fa-info-circle"></i> ' . $li['jns_dokumen'] . '</span>' : '<span class="badge badge-success"><i class="fa fa-info-circle"></i> ' . $li['jns_dokumen'] . '</span>';
+			$jns_dokumen .= $li['jns_dokumen'] != 'Biasa' ? '<span class="badge badge-dark">' . $li['jns_dokumen'] . '</span>' : '<span class="badge badge-dark">' . $li['jns_dokumen'] . '</span>';
 			$row[] = $jns_dokumen;
 			$detail = 'Nomor: <b>' . $li['no_dokumen'] . '/' . $li['no_dokumen2'] . '</b></span><br>';
 			$detail .= '<span>Perihal: <br>' . $li['perihal'] . '</span><br>';
@@ -126,11 +126,12 @@ class Dokumen_keluar extends CI_Controller
 
 			$aksi = '<center>';
 			// priview file before download
+			$aksi .= '<span class="btn btn-success" style="cursor: pointer" onclick="approve(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-check-square"></i></span>&nbsp;';
 			$download = $li['file_dokumen'] != null ? '<a href="' . base_url('assets/' . $li['path_folder'] . '/' . $li['file_dokumen']) . '" target="_blank" class="btn btn-info" style="cursor: pointer"><i class="fa fa-download" style="color:white"></i></a>&nbsp;' : '';
 			$aksi .= $download;
 
 			// $aksi .= '<span class="btn btn-info" style="cursor: pointer" onclick="view(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-eye"></i></span>&nbsp;';
-			$aksi .= '<span class="btn btn-success" style="cursor: pointer" onclick="sunting(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-edit"></i></span>&nbsp;';
+			$aksi .= '<span class="btn btn-warning" style="cursor: pointer" onclick="sunting(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-edit"></i></span>&nbsp;';
 			$aksi .= '<span class="btn btn-danger" style="cursor: pointer" onclick="hapus(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-trash"></i></span>';
 			$aksi .= '</center>';
 			$row[] = $aksi;
@@ -328,6 +329,34 @@ class Dokumen_keluar extends CI_Controller
 		$icon = 'success';
 
 		echo json_encode(['status' => true, 'title' => $title, 'icon' => $icon, 'text' => $text]);
+		exit;
+	}
+
+	public function status()
+	{
+		$key['id_dokumen'] = input('id');
+		$sts_dok = input('sts_dok');
+
+		$jml_data = $this->m_dok_keluar->read(['sts_dokumen' => 'Diterima'])->num_rows();
+		$no = (int) $jml_data + 1;
+		if ($no > 999) $cond = $no;
+		elseif ($no > 99) $cond = '0' . $no;
+		elseif ($no > 9) $cond = '00' . $no;
+		else $cond = '000' . $no;
+
+		if ($sts_dok == 'Diterima') {
+			$data = array(
+				'no_dokumen' => $cond,
+				'sts_dokumen' => $sts_dok
+			);
+		} else {
+			$data = array(
+				'sts_dokumen' => $sts_dok
+			);
+		}
+		$this->m_dok_keluar->update($data, $key);
+
+		echo json_encode(['status' => true]);
 		exit;
 	}
 

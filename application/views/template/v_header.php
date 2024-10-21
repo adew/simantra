@@ -9,7 +9,7 @@
 	<title>Si-MANTRA | <?= $title; ?></title>
 
 	<!-- Favivon -->
-	<link rel="shortcut icon" href="<?= base_url('assets/logo-bsi.png') ?>">
+	<link rel="shortcut icon" href="<?= base_url('assets/logo-pta-ambon.png') ?>">
 	<!-- Custome CSS -->
 	<link rel="stylesheet" href="<?= base_url('assets/style.css') ?>">
 	<!-- Font Awesome Icons -->

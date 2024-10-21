@@ -51,9 +51,9 @@
 											<th style="width: 12%;">Jenis Surat</th>
 											<th>Detail</th>
 											<th>Tujuan</th>
-											<th style="width: 15%;">Tgl. Dibuat</th>
+											<th style="width: 14%;">Tgl. Dibuat</th>
 											<th class="text-center" style="width: 8%;">Status</th>
-											<th class="text-center" style="width: 15%;">Opsi</th>
+											<th class="text-center" style="width: 17%;">Opsi</th>
 										</tr>
 									</thead>
 								</table>
@@ -473,6 +473,65 @@
 							title: 'Sukses',
 							text: 'Dokumen telah berhasil dihapus',
 							icon: 'success',
+							timer: 2000,
+							showConfirmButton: false
+						}).then((result) => {
+							if (result.dismiss === Swal.DismissReason.timer) {
+								location.reload();
+							}
+						});
+					}
+				});
+			}
+		})
+	}
+
+	function approve(id) {
+		Swal.fire({
+			title: 'Permintaan nomor surat?',
+			showDenyButton: true,
+			showCancelButton: true,
+			cancelButtonColor: '#d33',
+			confirmButtonText: `Terima`,
+			cancelButtonText: 'Tolak'
+		}).then((result) => {
+			if (result.value) {
+				$.ajax({
+					url: "<?= site_url('user/page/dokumen-keluar/status/') ?>",
+					type: "POST",
+					data: {
+						id: id,
+						sts_dok: 'Diterima'
+					},
+					dataType: "JSON",
+					success: function(data) {
+						Swal.fire({
+							title: 'Berhasil',
+							text: 'Nomor telah berhasil dibuat',
+							icon: 'success',
+							timer: 2000,
+							showConfirmButton: false
+						}).then((result) => {
+							if (result.dismiss === Swal.DismissReason.timer) {
+								location.reload();
+							}
+						});
+					}
+				});
+			} else if (result.dismiss) {
+				$.ajax({
+					url: "<?= site_url('user/page/dokumen-keluar/status/') ?>",
+					type: "POST",
+					data: {
+						id: id,
+						sts_dok: 'Ditolak'
+					},
+					dataType: "JSON",
+					success: function(data) {
+						Swal.fire({
+							title: 'Ditolak',
+							text: 'Pengajuan nomor ditolak',
+							icon: 'error',
 							timer: 2000,
 							showConfirmButton: false
 						}).then((result) => {
