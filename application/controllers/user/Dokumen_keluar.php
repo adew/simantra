@@ -54,7 +54,7 @@ class Dokumen_keluar extends CI_Controller
 		// die;
 
 		$post = array(
-			'jns_dokumen', 'perihal', 'pembuat', 'kategori', 'sts_dokumen', 'no_dokumen2', 'tujuan_lain',
+			'jns_dokumen', 'perihal', 'pembuat', 'kategori', 'no_dokumen2', 'tujuan_lain',
 		);
 
 		foreach ($post as $post) {
@@ -110,7 +110,7 @@ class Dokumen_keluar extends CI_Controller
 			$jns_dokumen = $li['jns_kategori'] . '<br>';
 			$jns_dokumen .= $li['jns_dokumen'] != 'Biasa' ? '<span class="badge badge-dark">' . $li['jns_dokumen'] . '</span>' : '<span class="badge badge-dark">' . $li['jns_dokumen'] . '</span>';
 			$row[] = $jns_dokumen;
-			$detail = 'Nomor: <b>' . $li['no_dokumen'] . '/' . $li['no_dokumen2'] . '</b></span><br>';
+			$detail = 'Nomor: <b>' . $li['no_dokumen'] . '</b>/' . $li['no_dokumen2'] . '</span><br>';
 			$detail .= '<span>Perihal: <br>' . $li['perihal'] . '</span><br>';
 			$row[] = $detail;
 
@@ -122,18 +122,27 @@ class Dokumen_keluar extends CI_Controller
 
 			$date = explode(' ', $li['createDate']);
 			$row[] = tgl_indo($date[0]) . ' | ' . $date[1] . '<br><span>Oleh: <br>' . $li['nm_pegawai'] . '</span>';
-			$row[] = $li['sts_dokumen'];
 
-			$aksi = '<center>';
+			if($li['sts_dokumen']=='Proses'){
+				$row[] = '<span class="badge badge-warning">'.strtoupper($li['sts_dokumen']).'</span>';
+			}else if($li['sts_dokumen']=='Diterima'){
+				$row[] = '<span class="badge badge-success">'.strtoupper($li['sts_dokumen']).'</span>';
+			}else{
+				$row[] = '<span class="badge badge-danger">'.strtoupper($li['sts_dokumen']).'</span>';
+			}
+
+			$aksi = '<div class="text-right">';
 			// priview file before download
+			if($li['sts_dokumen']=='Proses')
 			$aksi .= '<span class="btn btn-success" style="cursor: pointer" onclick="approve(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-check-square"></i></span>&nbsp;';
+
 			$download = $li['file_dokumen'] != null ? '<a href="' . base_url('assets/' . $li['path_folder'] . '/' . $li['file_dokumen']) . '" target="_blank" class="btn btn-info" style="cursor: pointer"><i class="fa fa-download" style="color:white"></i></a>&nbsp;' : '';
 			$aksi .= $download;
 
 			// $aksi .= '<span class="btn btn-info" style="cursor: pointer" onclick="view(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-eye"></i></span>&nbsp;';
 			$aksi .= '<span class="btn btn-warning" style="cursor: pointer" onclick="sunting(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-edit"></i></span>&nbsp;';
 			$aksi .= '<span class="btn btn-danger" style="cursor: pointer" onclick="hapus(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-trash"></i></span>';
-			$aksi .= '</center>';
+			$aksi .= '</div>';
 			$row[] = $aksi;
 
 			$data[] = $row;
@@ -219,7 +228,7 @@ class Dokumen_keluar extends CI_Controller
 		// $no_dok .= '/' . $config['nm_group'];
 		$no_dok = $cond;
 		$data = array(
-			'no_dokumen' => $no_dok,
+			// 'no_dokumen' => $no_dok,
 			'no_dokumen2' => input('no_dokumen2'),
 			'jns_dokumen' => input('jns_dokumen'),
 			'dari' => $config['nm_group'],
@@ -229,7 +238,7 @@ class Dokumen_keluar extends CI_Controller
 			// 'createDate' => date("Y-m-d H:i:s", strtotime(input('tgl_surat'))),
 			// 'lampiran' => input('lampiran') == '' ? 0 : input('lampiran'),
 			'kategori' => input('kategori'),
-			'sts_dokumen' => input('sts_dokumen'),
+			'sts_dokumen' => 'Proses',
 			'catatan' => input('catatan') == '' ? NULL : input('catatan')
 		);
 
@@ -255,7 +264,7 @@ class Dokumen_keluar extends CI_Controller
 			$this->db->trans_commit();
 
 			$title = 'Sukses';
-			$text = 'Telah berhasil dibuat dengan nomor ' . $no_dok;
+			$text = 'Telah disimpan';
 			$icon = 'success';
 		} else {
 			$this->db->trans_rollback();

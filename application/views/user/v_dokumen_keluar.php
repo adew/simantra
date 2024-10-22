@@ -52,8 +52,8 @@
 											<th>Detail</th>
 											<th>Tujuan</th>
 											<th style="width: 14%;">Tgl. Dibuat</th>
-											<th class="text-center" style="width: 8%;">Status</th>
-											<th class="text-center" style="width: 17%;">Opsi</th>
+											<th class="text-center" style="width: 5%;">Status</th>
+											<th class="text-center" style="width: 13%;">Opsi</th>
 										</tr>
 									</thead>
 								</table>
@@ -88,7 +88,7 @@
 						<div class="col-sm-2">
 							<input type="text" class="form-control" name="nomor_dokumen" id="no-dokumen" placeholder="Nomor" readonly>
 							<small class="form-text text-muted">
-								<span style="color: blue;">Nomor otomatis akan tergenerate setelah form di simpan.</span>
+								<span style="color: blue;">Nomor surat akan terlihat setelah di approve oleh administrator</span>
 							</small>
 						</div>
 						<label class="col-sm-auto col-form-label"> / </label>
@@ -200,7 +200,7 @@
 							<small class="help-text" id="sts_dokumen-feedback"></small>
 						</div>
 					</div> -->
-					<input type="hidden" value="Diarsipkan" name="sts_dokumen">
+					<!-- <input type="hidden" value="Proses" name="sts_dokumen"> -->
 					<div class="form-group row">
 						<label class="col-sm-2 col-form-label">File Upload<sup class="text-red">*</sup></label>
 						<div class="col-sm-6">
@@ -488,12 +488,14 @@
 
 	function approve(id) {
 		Swal.fire({
-			title: 'Permintaan nomor surat?',
+			title: 'Pengajuan nomor surat?',
+			icon: "warning",
 			showDenyButton: true,
 			showCancelButton: true,
 			cancelButtonColor: '#d33',
 			confirmButtonText: `Terima`,
-			cancelButtonText: 'Tolak'
+			cancelButtonText: 'Tolak',
+			allowOutsideClick: false
 		}).then((result) => {
 			if (result.value) {
 				$.ajax({
@@ -506,10 +508,10 @@
 					dataType: "JSON",
 					success: function(data) {
 						Swal.fire({
-							title: 'Berhasil',
+							title: 'Diterima',
 							text: 'Nomor telah berhasil dibuat',
 							icon: 'success',
-							timer: 2000,
+							timer: 2500,
 							showConfirmButton: false
 						}).then((result) => {
 							if (result.dismiss === Swal.DismissReason.timer) {
@@ -532,7 +534,7 @@
 							title: 'Ditolak',
 							text: 'Pengajuan nomor ditolak',
 							icon: 'error',
-							timer: 2000,
+							timer: 2500,
 							showConfirmButton: false
 						}).then((result) => {
 							if (result.dismiss === Swal.DismissReason.timer) {
