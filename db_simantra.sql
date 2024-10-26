@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 20, 2024 at 07:20 AM
+-- Generation Time: Oct 26, 2024 at 07:50 PM
 -- Server version: 10.4.18-MariaDB
 -- PHP Version: 8.0.3
 
@@ -40,7 +40,7 @@ CREATE TABLE `tbl_config` (
 --
 
 INSERT INTO `tbl_config` (`no`, `thn_dokumen`, `nm_group`, `status`, `CreateDate`) VALUES
-(1, 2021, 'SMG', 1, '2021-02-01 16:16:41');
+(1, 2024, 'PTA', 1, '2024-10-26 16:16:41');
 
 -- --------------------------------------------------------
 
@@ -63,7 +63,7 @@ CREATE TABLE `tbl_dok_keluar` (
   `catatan` text DEFAULT NULL,
   `path_folder` varchar(50) DEFAULT NULL,
   `file_dokumen` text DEFAULT NULL,
-  `createDate` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE current_timestamp()
+  `createDate` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -71,12 +71,8 @@ CREATE TABLE `tbl_dok_keluar` (
 --
 
 INSERT INTO `tbl_dok_keluar` (`id_dokumen`, `no_dokumen`, `no_dokumen2`, `jns_dokumen`, `dari`, `unit_tujuan`, `perihal`, `pembuat`, `lampiran`, `kategori`, `sts_dokumen`, `catatan`, `path_folder`, `file_dokumen`, `createDate`) VALUES
-(8, '01/0004-1/SMG', '', 1, 'SMG', 'a:1:{i:0;s:4:\"Jaya\";}', 'PROYEJK', 1, 0, '1', 'Diarsipkan', NULL, 'berkas-keluar/2024-10', 'PKP_NADHILAH_-_FEBRUARI_20241.pdf', '2024-10-19 11:45:05'),
-(10, '0003', 'dsfds', 2, 'SMG', 'a:1:{i:0;s:7:\"adfasdf\";}', 'DFSFDS', 1, 0, '2', 'Diarsipkan', NULL, 'berkas-keluar/2024-10', 'PKP_NADHILAH_-_JANUARI_20247.pdf', '2024-10-19 16:54:08'),
-(11, '0004', '23432/sdfds', 1, 'SMG', 'a:1:{i:0;s:5:\"sdfds\";}', 'DSFDS', 1, 0, '1', 'Diarsipkan', NULL, 'berkas-keluar/2024-10', 'PKP_NADHILAH_-_FEBRUARI_2024_ii.pdf', '2024-10-19 16:55:27'),
-(12, '0005', 'gfgf/yty', 2, 'SMG', 'a:1:{i:0;s:5:\"jhgjh\";}', 'FDFDD', 2, 0, '1', 'Diarsipkan', NULL, 'berkas-keluar/2024-10', 'PKP_NADHILAH_-_JANUARI_20248.pdf', '2024-10-19 18:13:10'),
-(14, '0005', 'sdf', 2, 'SMG', 'a:1:{i:0;s:3:\"dsf\";}', 'sdf', 2, 0, '3', 'Diarsipkan', NULL, 'berkas-keluar/2024-10', 'PKP_NADHILAH_-_FEBRUARI_20245.pdf', '2024-10-19 21:14:17'),
-(15, '0006', 'AAA/3294823/234', 1, '', 'a:1:{i:0;s:9:\"BBBB 9999\";}', 'Csdfdsfsdf', 2, 0, '1', 'Diarsipkan', NULL, 'berkas-keluar/2024-10', 'PKP_NADHILAH_-_JANUARI_202426.pdf', '2024-10-20 08:38:58');
+(1, '0001', '9999/6767/ttt', 1, 'PTA', 'a:1:{i:0;s:9:\"Daere 999\";}', 'Kerja bakti', 1, 0, '1', 'Diterima', NULL, 'berkas-keluar/2024-10', 'a946a0448b133a2b96fc693b6d4466bb2.pdf', '2024-07-17 02:06:22'),
+(2, '0002', 'pppp/6666', 2, 'PTA', 'a:1:{i:0;s:10:\"Para Camat\";}', 'Peresmian', 3, 0, '1', 'Diterima', NULL, 'berkas-keluar/2024-10', 'a946a0448b133a2b96fc693b6d4466bb1.pdf', '2024-10-26 23:11:12');
 
 -- --------------------------------------------------------
 
@@ -149,8 +145,8 @@ CREATE TABLE `tbl_jns_dokumen` (
 --
 
 INSERT INTO `tbl_jns_dokumen` (`id_jns_dokumen`, `jns_dokumen`, `keterangan`, `counter_dokumen`, `createDate`) VALUES
-(1, 'Penting', 'Bersifat Penting', 6, '2021-01-27 00:00:00'),
-(2, 'Biasa', 'Bersifat Biasa', 5, '2021-01-27 00:00:00');
+(1, 'Penting', 'Bersifat Penting', 1, '2021-01-27 00:00:00'),
+(2, 'Biasa', 'Bersifat Biasa', 2, '2021-01-27 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -192,9 +188,9 @@ CREATE TABLE `tbl_pegawai` (
 --
 
 INSERT INTO `tbl_pegawai` (`id_pegawai`, `nm_pegawai`, `id_jabatan`, `createDate`) VALUES
-(1, 'Okky F Achamd', 1, '2021-01-29 09:25:39'),
-(2, 'Risqi Widayat', 2, '2021-01-29 09:25:52'),
-(3, 'M Syukron Habiby', 1, '2021-01-29 09:26:06');
+(1, 'Andra', 1, '2021-01-29 09:25:39'),
+(2, 'Dicky', 1, '2021-01-29 09:25:52'),
+(3, 'Yayan', 2, '2021-01-29 09:26:06');
 
 -- --------------------------------------------------------
 
@@ -1597,7 +1593,7 @@ ALTER TABLE `tbl_config`
 -- AUTO_INCREMENT for table `tbl_dok_keluar`
 --
 ALTER TABLE `tbl_dok_keluar`
-  MODIFY `id_dokumen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id_dokumen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tbl_dok_masuk`

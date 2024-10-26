@@ -30,6 +30,11 @@ class Dokumen_keluar extends CI_Controller
 
 	public function index()
 	{
+		$filter_bulan = $this->input->post('bulan', true);
+		$tahun = $this->input->post('tahun', true);
+		$data['filter_bulan'] = !empty($filter_bulan) ? $filter_bulan : date('m');
+		$data['filter_tahun'] = !empty($tahun) ? $tahun : date('Y');
+
 		$page = 'user/v_dokumen_keluar';
 		$group = $this->m_config->read(['status' => 1])->row_array();
 
@@ -50,8 +55,6 @@ class Dokumen_keluar extends CI_Controller
 		$data['error'] = array();
 		$data['status'] = true;
 
-		// var_dump($_FILES['file']['name']);
-		// die;
 
 		$post = array(
 			'jns_dokumen', 'perihal', 'pembuat', 'kategori', 'no_dokumen2', 'tujuan_lain',
@@ -71,20 +74,6 @@ class Dokumen_keluar extends CI_Controller
 			$data['status'] = false;
 		}
 
-		// if (input('jns_dokumen') != 3) {
-		// 	if (!isset($_POST['li_tujuan'])) {
-		// 		$data['inputerror'][] = 'li_tujuan';
-		// 		$data['error'][] = 'Bagian ini harus diisi';
-		// 		$data['status'] = false;
-		// 	}
-		// } else {
-		// 	if (input('tujuan_lain') == '') {
-		// 		$data['inputerror'][] = 'tujuan_lain';
-		// 		$data['error'][] = 'Bagian ini harus diisi';
-		// 		$data['status'] = false;
-		// 	}
-		// }
-
 
 		// if (!isset($_POST['li_tujuan'])) {
 		// 	$data['inputerror'][] = 'li_tujuan';
@@ -100,7 +89,13 @@ class Dokumen_keluar extends CI_Controller
 
 	public function get_list()
 	{
-		$list = $this->m_dok_keluar->get_datatables();
+		$filter_bulan = $this->input->post('bulan', true);
+		$tahun = $this->input->post('tahun', true);
+
+		$data['filter_bulan'] = !empty($filter_bulan) ? $filter_bulan : date('m');
+		$data['filter_tahun'] = !empty($tahun) ? $tahun : date('Y');
+
+		$list = $this->m_dok_keluar->get_datatables($data['filter_bulan'], $data['filter_tahun']);
 		$data = array();
 		$no = $_POST['start'] + 1;
 		foreach ($list as $li) {
@@ -110,7 +105,11 @@ class Dokumen_keluar extends CI_Controller
 			$jns_dokumen = $li['jns_kategori'] . '<br>';
 			$jns_dokumen .= $li['jns_dokumen'] != 'Biasa' ? '<span class="badge badge-dark">' . $li['jns_dokumen'] . '</span>' : '<span class="badge badge-dark">' . $li['jns_dokumen'] . '</span>';
 			$row[] = $jns_dokumen;
-			$detail = 'Nomor: <b>' . $li['no_dokumen'] . '</b>/' . $li['no_dokumen2'] . '</span><br>';
+			if (empty($li['no_dokumen'])) {
+				$detail = 'Nomor: -<br>';
+			} else {
+				$detail = 'Nomor: <b>' . $li['no_dokumen'] . '</b>/' . $li['no_dokumen2'] . '</span><br>';
+			}
 			$detail .= '<span>Perihal: <br>' . $li['perihal'] . '</span><br>';
 			$row[] = $detail;
 
@@ -121,20 +120,20 @@ class Dokumen_keluar extends CI_Controller
 			$row[] = 'Kepada: <br>' . $exp;
 
 			$date = explode(' ', $li['createDate']);
-			$row[] = tgl_indo($date[0]) . ' | ' . $date[1] . '<br><span>Oleh: <br>' . $li['nm_pegawai'] . '</span>';
+			$row[] = '<span>' . tgl_indo($date[0]) . ' | ' . $date[1] . '<br>Oleh: <br>' . $li['nm_pegawai'] . '</span>';
 
-			if($li['sts_dokumen']=='Proses'){
-				$row[] = '<span class="badge badge-warning">'.strtoupper($li['sts_dokumen']).'</span>';
-			}else if($li['sts_dokumen']=='Diterima'){
-				$row[] = '<span class="badge badge-success">'.strtoupper($li['sts_dokumen']).'</span>';
-			}else{
-				$row[] = '<span class="badge badge-danger">'.strtoupper($li['sts_dokumen']).'</span>';
+			if ($li['sts_dokumen'] == 'Proses') {
+				$row[] = '<span class="badge badge-warning">' . strtoupper($li['sts_dokumen']) . '</span>';
+			} else if ($li['sts_dokumen'] == 'Diterima') {
+				$row[] = '<span class="badge badge-success">' . strtoupper($li['sts_dokumen']) . '</span>';
+			} else {
+				$row[] = '<span class="badge badge-danger">' . strtoupper($li['sts_dokumen']) . '</span>';
 			}
 
 			$aksi = '<div class="text-right">';
 			// priview file before download
-			if($li['sts_dokumen']=='Proses')
-			$aksi .= '<span class="btn btn-success" style="cursor: pointer" onclick="approve(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-check-square"></i></span>&nbsp;';
+			if ($li['sts_dokumen'] == 'Proses')
+				$aksi .= '<span class="btn btn-success" style="cursor: pointer" onclick="approve(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-check-square"></i></span>&nbsp;';
 
 			$download = $li['file_dokumen'] != null ? '<a href="' . base_url('assets/' . $li['path_folder'] . '/' . $li['file_dokumen']) . '" target="_blank" class="btn btn-info" style="cursor: pointer"><i class="fa fa-download" style="color:white"></i></a>&nbsp;' : '';
 			$aksi .= $download;
@@ -226,7 +225,8 @@ class Dokumen_keluar extends CI_Controller
 		// $no_dok .= '/' . $cond . '-' . $dokumen['id_jns_dokumen'];
 		// // set kode group
 		// $no_dok .= '/' . $config['nm_group'];
-		$no_dok = $cond;
+		// $no_dok = $cond;
+
 		$data = array(
 			// 'no_dokumen' => $no_dok,
 			'no_dokumen2' => input('no_dokumen2'),
@@ -235,7 +235,7 @@ class Dokumen_keluar extends CI_Controller
 			// 'unit_tujuan' => serialize($_POST['li_tujuan']),
 			'perihal' => input('perihal'),
 			'pembuat' => input('pembuat'),
-			// 'createDate' => date("Y-m-d H:i:s", strtotime(input('tgl_surat'))),
+			'createDate' => date("Y-m-d H:i:s"),
 			// 'lampiran' => input('lampiran') == '' ? 0 : input('lampiran'),
 			'kategori' => input('kategori'),
 			'sts_dokumen' => 'Proses',
@@ -306,7 +306,7 @@ class Dokumen_keluar extends CI_Controller
 			// 'createDate' => date("Y-m-d H:i:s", strtotime(input('tgl_surat'))),
 			// 'lampiran' => input('lampiran') == '' ? 0 : input('lampiran'),
 			'kategori' => input('kategori'),
-			'sts_dokumen' => input('sts_dokumen'),
+			// 'sts_dokumen' => 'Proses',
 			'catatan' => input('catatan') == '' ? NULL : input('catatan')
 		);
 
@@ -345,8 +345,16 @@ class Dokumen_keluar extends CI_Controller
 	{
 		$key['id_dokumen'] = input('id');
 		$sts_dok = input('sts_dok');
+		$tahun = date('Y');
 
-		$jml_data = $this->m_dok_keluar->read(['sts_dokumen' => 'Diterima'])->num_rows();
+		// $jml_data = $this->m_dok_keluar->read(['sts_dokumen' => 'Diterima'])->num_rows();
+		$jml_data = $this->m_dok_keluar->lihat_nomor($tahun);
+		if (empty($jml_data)) {
+			$jml_data = 0;
+		} else {
+			$jml_data = $jml_data['no_dokumen'];
+		}
+
 		$no = (int) $jml_data + 1;
 		if ($no > 999) $cond = $no;
 		elseif ($no > 99) $cond = '0' . $no;

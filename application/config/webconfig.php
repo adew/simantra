@@ -40,7 +40,7 @@ switch ($ver) {
 			'hostname' => 'localhost',
 			'username' => 'root',
 			'password' => '',
-			'database' => 'db_simantra',
+			'database' => 'db_e-filing',
 			'dbdriver' => 'mysqli'
 		);
 		break;

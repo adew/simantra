@@ -11,16 +11,19 @@ class M_dokumen_keluar extends CI_Model
 
 	var $table = 'tbl_dok_keluar';
 	var $column_order = array(null, 'a.no_dokumen', 'a.perihal', 'c.nm_pegawai', 'b.jns_dokumen', 'd.jns_kategori', 'a.createDate', null);
-	var $column_search = array('a.no_dokumen', 'a.perihal', 'c.nm_pegawai', 'b.jns_dokumen', 'd.jns_kategori', 'a.unit_tujuan');
-	var $order = array('a.createDate' => 'desc');
+	var $column_search = array('a.no_dokumen', 'a.perihal', 'c.nm_pegawai', 'a.sts_dokumen', 'a.createDate', 'd.jns_kategori', 'a.unit_tujuan');
+	var $order = array('a.no_dokumen' => 'desc');
 
-	function _get_datatable_query()
+	function _get_datatable_query($bulan = '', $tahun = '')
 	{
 		// $this->db->from($this->table);
 		$this->db->select('a.*, c.nm_pegawai, b.jns_dokumen, d.jns_kategori')->from($this->table . ' a')
 			->join('tbl_jns_dokumen b', 'a.jns_dokumen = b.id_jns_dokumen', 'left')
 			->join('tbl_pegawai c', 'a.pembuat = c.id_pegawai', 'left')
 			->join('tbl_kategori d', 'a.kategori = d.id_kategori', 'left');
+
+		$array = array('YEAR(a.createDate)' => $tahun, 'MONTH(a.createDate)' => $bulan);
+		$this->db->where($array);
 
 		$i = 0;
 		foreach ($this->column_search as $item) {
@@ -45,9 +48,9 @@ class M_dokumen_keluar extends CI_Model
 		}
 	}
 
-	function get_datatables()
+	function get_datatables($bulan, $tahun)
 	{
-		$this->_get_datatable_query();
+		$this->_get_datatable_query($bulan, $tahun);
 		if ($_POST['length'] != -1) {
 			$this->db->limit($_POST['length'], $_POST['start']);
 			$query = $this->db->get();
@@ -99,5 +102,25 @@ class M_dokumen_keluar extends CI_Model
 	public function delete($key)
 	{
 		$this->db->delete($this->table, $key);
+	}
+
+	public function get_data_chart($tahun)
+	{
+
+		$sql = "SELECT DATE_FORMAT(createDate, '%m') AS bulan, COUNT(id_dokumen) AS count FROM tbl_dok_keluar WHERE YEAR(createDate) = $tahun GROUP BY MONTH(createDate)";
+
+		$query = $this->db->query($sql);
+
+		return $query->result_array();
+	}
+
+	public function lihat_nomor($tahun)
+	{
+
+		$sql = "SELECT no_dokumen FROM tbl_dok_keluar WHERE YEAR(createDate) = $tahun AND sts_dokumen = 'Diterima' ORDER BY no_dokumen DESC LIMIT 1";
+
+		$query = $this->db->query($sql);
+
+		return $query->row_array();
 	}
 }

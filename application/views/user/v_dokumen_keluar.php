@@ -27,21 +27,65 @@
 		<section class="content">
 			<div class="container-fluid">
 				<div class="row">
-					<div class="col-12">
+					<!-- <div class="col-12">
 						<blockquote class="ml-0 mt-0">
 							<strong>Perhatian!</strong><br>
 							* <b>Nomor Surat</b> akan didapatkan setelah <i>Upload File</i> selesai.<br>
-							<!-- * <b>Surat</b> untuk unit tujuan <i>eksternal</i>. <br>
-							* File yang sudah di upload tidak bisa dihapus kembali. <br>
-							* Untuk <b>Unit Tujuan</b> <i>internal</i> atau <b>Nama Pegawai</b> yang belum terdaftar harap hubungin bagian Administrator. -->
 						</blockquote>
-					</div>
+					</div> -->
 					<div class="col-12">
 						<div class="card">
 							<div class="card-header">
-								<button type="button" class="btn btn-xs btn-primary" onclick="show_modal()">
-									<i class="fa fa-plus"></i> Tambah Surat
-								</button>
+								<form action="" method="post" name="adminForm">
+									<table width="100%" border="0" cellspacing="0" cellpadding="0" class="adminlist">
+										<tfoot>
+											<tr>
+												<td class="col-xs-2">
+													<button type="button" class="btn btn-xs btn-primary" onclick="show_modal()">
+														<i class="fa fa-plus"></i> Tambah Surat
+													</button>
+												</td>
+												<td class="col-xs-5">
+													<?php $tahun = date('Y'); ?>
+													<div class="select-wrapper">
+														<select class="form-control select2" name="bulan" id="filterBulan" tabindex="1" onchange="form.submit();" style="width:95%;">
+															<?php
+															foreach (list_bulan() as $key => $value) {
+																if ($key == $filter_bulan) {
+																	echo '<option selected="selected" value="' . $key . '"> Bulan ' . $value . '</option>';
+																} else {
+																	echo '<option value="' . $key . '"> Bulan ' . $value . '</option>';
+																}
+															}
+															?>
+														</select>
+													</div>
+												</td>
+												<td class="col-xs-5">
+													<?php $tahun = date('Y'); ?>
+													<!-- <div class="select-wrapper" style="width:35%;"> -->
+													<div class="select-wrapper">
+														<select class="form-control select2" name="tahun" id="filterBulan" tabindex="1" onchange="form.submit();" style="width:95%;">
+															<?php
+															$year_array = array();
+															for ($i = date('Y') - 2; $i <= date('Y'); $i++) {
+																$year_array[$i] = $i;
+															}
+															foreach ($year_array as $value) {
+																if ($value == $filter_tahun) {
+																	echo '<option selected="selected" value="' . $value . '"> Tahun ' . $filter_tahun . '</option>';
+																} else {
+																	echo '<option value="' . $value . '"> Tahun ' . $value . '</option>';
+																}
+															}
+															?>
+														</select>
+													</div>
+												</td>
+											</tr>
+										</tfoot>
+									</table>
+								</form>
 							</div>
 							<div class="card-body">
 								<table class="table table-bordered table-hover" id="table" style="width: 100%;">
@@ -53,7 +97,7 @@
 											<th>Tujuan</th>
 											<th style="width: 14%;">Tgl. Dibuat</th>
 											<th class="text-center" style="width: 5%;">Status</th>
-											<th class="text-center" style="width: 13%;">Opsi</th>
+											<th class="col-md-3 text-center">Opsi</th>
 										</tr>
 									</thead>
 								</table>
@@ -235,7 +279,6 @@
 
 <script>
 	var save_method = '';
-
 	$(document).ready(function() {
 		//datatables
 		table = $('#table').DataTable({
@@ -244,7 +287,11 @@
 			'order': [],
 			'ajax': {
 				'url': "<?= site_url('user/page/dokumen-keluar/list') ?>",
-				'type': 'POST'
+				'type': 'POST',
+				'data': {
+					bulan: <?= $filter_bulan ?>,
+					tahun: <?= $filter_tahun ?>
+				},
 			},
 			'ordering': false
 		});

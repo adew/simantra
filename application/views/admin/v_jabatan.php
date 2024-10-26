@@ -145,7 +145,7 @@
 		save_method = 'update';
 
 		$('#modal_form').modal('show');
-		$('.btn_save').text('Sunting');
+		$('.btn_save').text('Simpan');
 
 		$.ajax({
 			url: '<?= site_url('admin/page/jabatan/get/') ?>' + id,

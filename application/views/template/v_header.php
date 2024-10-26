@@ -88,6 +88,11 @@
 	<script src="<?= base_url('assets/') . 'plugins/jquery-mapael/maps/usa_states.min.js' ?>"></script>
 	<!-- ChartJS -->
 	<script src="<?= base_url('assets/') . 'plugins/chart.js/Chart.min.js' ?>"></script>
+	<style>
+		.highcharts-chart {
+			display: block, width: 100%, height: auto
+		}
+	</style>
 </head>
 
 <body class="hold-transition sidebar-mini text-sm">
