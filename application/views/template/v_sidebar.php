@@ -8,12 +8,13 @@
 				<li class="nav-item">
 					<span class="nav-link" style="color: white;">
 						<!-- <i class="fa fa-fw fa-desktop nav-icon"></i> -->
-						<h3>Si - MANTRA</h3>
+						<i><img src="<?= base_url('assets/simantra.jpg') ?>" width="50px" height="30px"></i>
+						<p style="font-size: 25px;">SI-MANTRA</p>
 					</span>
 				</li>
 				<!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-
+				<li class="header">&nbsp;</li>
 				<li class="nav-item">
 					<a href="<?= site_url($_SESSION['lv_user'] . '/page/dashboard') ?>" class="nav-link" id="dashboard">
 						<i class="fa fa-fw fa-desktop nav-icon"></i>

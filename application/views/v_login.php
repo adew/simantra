@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Si-MANTRA | Log in</title>
+	<title>SI-MANTRA | Log in</title>
 	<!-- Tell the browser to be responsive to screen width -->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -29,7 +29,8 @@
 		<div class="card">
 			<div class="card-header text-center my-0 py-2">
 				<!-- <h4 class="text-bold">NOMOR SURAT</h4> -->
-				<img src="<?= base_url('assets/logo-pta-ambon.png') ?>" width="140px" height="170px">
+				<!-- <img src="<?= base_url('assets/logo-pta-ambon.png') ?>" width="140px" height="170px"> -->
+				<img src="<?= base_url('assets/simantra.jpg') ?>" width="320px" height="200px">
 			</div>
 			<div class="card-body login-card-body" style="border-radius: 10px;">
 				<?php $msg = $this->session->flashdata('msg');

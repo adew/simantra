@@ -537,12 +537,11 @@
 		Swal.fire({
 			title: 'Pengajuan nomor surat?',
 			icon: "warning",
-			showDenyButton: true,
 			showCancelButton: true,
 			cancelButtonColor: '#d33',
-			confirmButtonText: `Terima`,
+			confirmButtonText: 'Terima',
 			cancelButtonText: 'Tolak',
-			allowOutsideClick: false
+			allowOutsideClick: true
 		}).then((result) => {
 			if (result.value) {
 				$.ajax({

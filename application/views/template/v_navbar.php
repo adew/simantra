@@ -91,8 +91,7 @@
 		</li> -->
 		<li class="nav-item">
 			<span class="nav-link">
-				|| <b style="color: black;"><?php echo $this->session->userdata('nama_user') ?></b> ||
-			</span>
+				<b style="color: black;"><?php echo $this->session->userdata('nama_user') ?></b> | </span>
 		</li>
 		<li class="nav-item">
 			<span class="nav-link" style="cursor: pointer" onclick="logout()">

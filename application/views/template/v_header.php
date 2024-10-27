@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
 
-	<title>Si-MANTRA | <?= $title; ?></title>
+	<title>SI-MANTRA | <?= $title; ?></title>
 
 	<!-- Favivon -->
 	<link rel="shortcut icon" href="<?= base_url('assets/logo-pta-ambon.png') ?>">
