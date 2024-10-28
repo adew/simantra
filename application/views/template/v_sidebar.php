@@ -16,7 +16,7 @@
                with font-awesome or any other icon font library -->
 				<li class="header">&nbsp;</li>
 				<li class="nav-item">
-					<a href="<?= site_url($_SESSION['lv_user'] . '/page/dashboard') ?>" class="nav-link" id="dashboard">
+					<a href="<?= site_url('page/dashboard') ?>" class="nav-link" id="dashboard">
 						<i class="fa fa-fw fa-desktop nav-icon"></i>
 						<p>Dashboard</p>
 					</a>
@@ -56,15 +56,17 @@
 									<p>Jabatan</p>
 								</a>
 							</li> -->
-							<li class="nav-item">
+							<!-- <li class="nav-item">
 								<a href="<?= site_url('admin/page/pegawai') ?>" class="nav-link" id="pegawai">
 									<p>Pegawai</p>
 								</a>
-							</li>
+							</li> -->
 						</ul>
 					</li>
+				<?php endif; ?>
 
-				<?php else : ?>
+				<?php $role = $this->session->userdata('lv_user');
+				if ($role == 'roleadmin') : ?>
 					<!-- Lv. User -->
 					<li class="nav-item has-treeview">
 						<a href="#" class="nav-link">

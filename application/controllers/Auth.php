@@ -34,7 +34,7 @@ class Auth extends CI_Controller
 			);
 
 			$this->session->set_userdata($sess);
-			redirect(site_url($user['lv_user'] . '/page/dashboard'));
+			redirect(site_url('page/dashboard'));
 		} else {
 			$this->session->set_flashdata('msg', 'Username atau Password tidak sesuai');
 			$this->index();

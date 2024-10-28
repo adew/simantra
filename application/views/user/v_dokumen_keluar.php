@@ -131,20 +131,24 @@
 						<label class="col-sm-2 col-form-label">Nomor Surat<sup class="text-red">*</sup></label>
 						<div class="col-sm-2">
 							<input type="text" class="form-control" name="nomor_dokumen" id="no-dokumen" placeholder="Nomor" readonly>
-							<small class="form-text text-muted">
+							<!-- <small class="form-text text-muted">
 								<span style="color: blue;">Nomor surat akan terlihat setelah di approve oleh administrator</span>
-							</small>
+							</small> -->
 						</div>
 						<label class="col-sm-auto col-form-label"> / </label>
 						<div class="col-sm-4">
 							<input type="text" class="form-control" name="no_dokumen2" id="no-dokumen2">
 							<small class="help-text" id="no_dokumen2-feedback"></small>
 						</div>
+						<div class="col-sm-3">
+							<small class="form-text text-muted">
+								<span style="color: blue;">Nomor surat akan terlihat setelah di approve oleh administrator</span>
+							</small>
+						</div>
 					</div>
-					<small class="help-text"><label>*Nomor urut akan muncul selah upload file selesai<label></small>
 					<div class="form-group row">
 						<label class="col-sm-2 col-form-label">Jenis Surat <sup class="text-red">*</sup></label>
-						<div class="col-sm-3">
+						<div class="col-sm-6">
 							<select class="form-control selectpicker" name="kategori" id="kategori">
 								<option selected disabled>-- Pilih --</option>
 								<?php foreach ($kategori as $li) : ?>
@@ -190,7 +194,7 @@
 					</div>
 
 					<div class="form-group row">
-						<label class="col-sm-2 col-form-label">Dibuat Oleh <sup class="text-red">*</sup></label>
+						<!-- <label class="col-sm-2 col-form-label">Dibuat Oleh <sup class="text-red">*</sup></label>
 						<div class="col-md-3">
 							<select class="form-control selectpicker" name="pembuat" id="pembuat" data-live-search="true">
 								<option selected disabled>-- Pilih --</option>
@@ -199,7 +203,7 @@
 								<?php endforeach; ?>
 							</select>
 							<small class="help-text" id="pembuat-feedback"></small>
-						</div>
+						</div> -->
 						<!-- <label class="col-sm-1 col-form-label">Tanggal <sup class="text-red">*</sup></label>
 						<div class="col-sm-2">
 							<div class="input-group date">
@@ -219,10 +223,28 @@
 						</div>
 						<label class="col-sm-auto col-form-label">Lembar <span class="ml-3 text-muted">(kosongkan bila tidak ada lampiran)</span></label>
 					</div> -->
-
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Unit Satker <sup class="text-red">*</sup></label>
+						<div class="col-sm-6">
+							<select class="form-control selectpicker" name="unit_satker" id="unit_satker">
+								<option selected disabled>-- Pilih --</option>
+								<?php foreach ($unit as $li) : ?>
+									<option value="<?= $li['kd_unit'] ?>"><?= $li['nm_unit']; ?></option>
+								<?php endforeach; ?>
+							</select>
+							<small class="help-text" id="unit_satker-feedback"></small>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Dibuat Oleh</label>
+						<div class="col-sm-6">
+							<input type="text" class="form-control" name="pembuat" id="pembuat">
+						</div>
+						<small class="help-text" id="pembuat-feedback"></small>
+					</div>
 					<div class="form-group row">
 						<label class="col-sm-2 col-form-label">Klasifikasi <sup class="text-red">*</sup></label>
-						<div class="col-sm-3">
+						<div class="col-sm-6">
 							<select class="form-control selectpicker" name="jns_dokumen" id="jns_dokumen">
 								<option selected disabled>-- Pilih --</option>
 								<?php foreach ($jns_dokumen as $li) : ?>
@@ -453,7 +475,7 @@
 				$('#no-dokumen').val(data.no_dokumen);
 				$('#no-dokumen2').val(data.no_dokumen2);
 				$('#tujuan-lain').val(data.unit_tujuan);
-				// $('#sts_dokumen').val(data.sts_dokumen);
+				$('#unit_satker').val(data.kd_unit);
 				// $('.custom-file-label').text(data.file_dokumen);
 				// $('#catatan').val(data.catatan);
 

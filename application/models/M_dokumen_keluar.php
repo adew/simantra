@@ -14,15 +14,20 @@ class M_dokumen_keluar extends CI_Model
 	var $column_search = array('a.no_dokumen', 'a.perihal', 'c.nm_pegawai', 'a.sts_dokumen', 'a.createDate', 'd.jns_kategori', 'a.unit_tujuan');
 	var $order = array('a.no_dokumen' => 'desc');
 
-	function _get_datatable_query($bulan = '', $tahun = '')
+	function _get_datatable_query($bulan = '', $tahun = '', $username = '')
 	{
 		// $this->db->from($this->table);
-		$this->db->select('a.*, c.nm_pegawai, b.jns_dokumen, d.jns_kategori')->from($this->table . ' a')
+		$this->db->select('a.*, c.nm_unit, b.jns_dokumen, d.jns_kategori')->from($this->table . ' a')
 			->join('tbl_jns_dokumen b', 'a.jns_dokumen = b.id_jns_dokumen', 'left')
-			->join('tbl_pegawai c', 'a.pembuat = c.id_pegawai', 'left')
+			->join('tbl_unit c', 'a.kd_unit = c.kd_unit', 'left')
 			->join('tbl_kategori d', 'a.kategori = d.id_kategori', 'left');
 
-		$array = array('YEAR(a.createDate)' => $tahun, 'MONTH(a.createDate)' => $bulan);
+		if ($username == 'admin') {
+			$array = array('YEAR(a.createDate)' => $tahun, 'MONTH(a.createDate)' => $bulan);
+		} else {
+			$array = array('YEAR(a.createDate)' => $tahun, 'MONTH(a.createDate)' => $bulan, 'c.bagian' => $username);
+		}
+
 		$this->db->where($array);
 
 		$i = 0;
@@ -48,9 +53,9 @@ class M_dokumen_keluar extends CI_Model
 		}
 	}
 
-	function get_datatables($bulan, $tahun)
+	function get_datatables($bulan, $tahun, $username)
 	{
-		$this->_get_datatable_query($bulan, $tahun);
+		$this->_get_datatable_query($bulan, $tahun, $username);
 		if ($_POST['length'] != -1) {
 			$this->db->limit($_POST['length'], $_POST['start']);
 			$query = $this->db->get();

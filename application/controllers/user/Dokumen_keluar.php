@@ -3,6 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Dokumen_keluar extends CI_Controller
 {
+	private $username;
 	public function __construct()
 	{
 		parent::__construct();
@@ -15,9 +16,10 @@ class Dokumen_keluar extends CI_Controller
 		$this->load->model('M_config', 'm_config');
 
 		$is_login = $this->session->userdata('is_login');
+		$this->username = $this->session->userdata('username');
 
 		if ($is_login === true) {
-			$cek_role = $this->m_login->get_user($this->session->userdata('username'));
+			// $cek_role = $this->m_login->get_user($this->session->userdata('username'));
 			// if ($cek_role['lv_user'] != $this->uri->segment('1')) {
 			// 	session_destroy();
 			// 	redirect(base_url());
@@ -41,9 +43,10 @@ class Dokumen_keluar extends CI_Controller
 		$data['title'] = 'Penomoran Surat';
 		$data['jns_dokumen'] = $this->m_jns_dokumen->show();
 		$data['kategori'] = $this->m_kategori->show();
-		$qry = 'SELECT * FROM tbl_unit WHERE kd_unit != \'' . $group['nm_group'] . '\' ORDER BY CASE WHEN nm_unit LIKE \'%group%\' THEN 1 ELSE 2 END';
-		$data['tujuan'] = $this->db->query($qry)->result_array();
+		// $qry = 'SELECT * FROM tbl_unit WHERE kd_unit != \'' . $group['nm_group'] . '\' ORDER BY CASE WHEN nm_unit LIKE \'%group%\' THEN 1 ELSE 2 END';
+		// $data['tujuan'] = $this->db->query($qry)->result_array();
 		$data['pembuat'] = $this->m_pegawai->show();
+		$data['unit'] = $this->m_tujuan->show();
 
 		$this->load->view($page, $data);
 	}
@@ -57,7 +60,7 @@ class Dokumen_keluar extends CI_Controller
 
 
 		$post = array(
-			'jns_dokumen', 'perihal', 'pembuat', 'kategori', 'no_dokumen2', 'tujuan_lain',
+			'jns_dokumen', 'perihal', 'pembuat', 'kategori', 'no_dokumen2', 'tujuan_lain', 'unit_satker'
 		);
 
 		foreach ($post as $post) {
@@ -95,7 +98,7 @@ class Dokumen_keluar extends CI_Controller
 		$data['filter_bulan'] = !empty($filter_bulan) ? $filter_bulan : date('m');
 		$data['filter_tahun'] = !empty($tahun) ? $tahun : date('Y');
 
-		$list = $this->m_dok_keluar->get_datatables($data['filter_bulan'], $data['filter_tahun']);
+		$list = $this->m_dok_keluar->get_datatables($data['filter_bulan'], $data['filter_tahun'], $this->username);
 		$data = array();
 		$no = $_POST['start'] + 1;
 		foreach ($list as $li) {
@@ -120,7 +123,7 @@ class Dokumen_keluar extends CI_Controller
 			$row[] = 'Kepada: <br>' . $exp;
 
 			$date = explode(' ', $li['createDate']);
-			$row[] = '<span>' . tgl_indo($date[0]) . ' | ' . $date[1] . '<br>Oleh: <br>' . $li['nm_pegawai'] . '</span>';
+			$row[] = '<span>' . tgl_indo($date[0]) . ' | ' . $date[1] . '<br>Oleh: ' . $li['pembuat'] . '<br>Bagian: ' . $li['nm_unit'] .  '</span>';
 
 			if ($li['sts_dokumen'] == 'Proses') {
 				$row[] = '<span class="badge badge-warning">' . strtoupper($li['sts_dokumen']) . '</span>';
@@ -184,6 +187,7 @@ class Dokumen_keluar extends CI_Controller
 			'sts_dokumen' => $data['sts_dokumen'],
 			'catatan' => $data['catatan'],
 			'file_dokumen' => $data['file_dokumen'],
+			'kd_unit' => $data['kd_unit'],
 			// 'createDate' => $data['createDate']
 		);
 		echo json_encode($respon);
@@ -239,7 +243,8 @@ class Dokumen_keluar extends CI_Controller
 			// 'lampiran' => input('lampiran') == '' ? 0 : input('lampiran'),
 			'kategori' => input('kategori'),
 			'sts_dokumen' => 'Proses',
-			'catatan' => input('catatan') == '' ? NULL : input('catatan')
+			'catatan' => input('catatan') == '' ? NULL : input('catatan'),
+			'kd_unit' => input('unit_satker'),
 		);
 
 
@@ -307,7 +312,8 @@ class Dokumen_keluar extends CI_Controller
 			// 'lampiran' => input('lampiran') == '' ? 0 : input('lampiran'),
 			'kategori' => input('kategori'),
 			// 'sts_dokumen' => 'Proses',
-			'catatan' => input('catatan') == '' ? NULL : input('catatan')
+			'catatan' => input('catatan') == '' ? NULL : input('catatan'),
+			'kd_unit' => input('unit_satker'),
 		);
 
 		$tujuan[] = input('tujuan_lain');

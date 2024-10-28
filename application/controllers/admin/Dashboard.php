@@ -3,6 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Dashboard extends CI_Controller
 {
+	private $username;
 	public function __construct()
 	{
 		parent::__construct();
@@ -10,13 +11,15 @@ class Dashboard extends CI_Controller
 		$this->load->model('M_dokumen_keluar', 'm_dok_keluar');
 
 		$is_login = $this->session->userdata('is_login');
+		$this->username = $this->session->userdata('username');
+
 
 		if ($is_login === true) {
-			$cek_role = $this->m_login->get_user($this->session->userdata('username'));
-			if ($cek_role['lv_user'] != $this->uri->segment('1')) {
-				session_destroy();
-				redirect(base_url());
-			}
+			// $cek_role = $this->m_login->get_user($this->session->userdata('username'));
+			// if ($cek_role['lv_user'] != $this->uri->segment('1')) {
+			// 	session_destroy();
+			// 	redirect(base_url());
+			// }
 		} else {
 			session_destroy();
 			redirect(base_url());
