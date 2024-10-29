@@ -239,8 +239,8 @@
 						<label class="col-sm-2 col-form-label">Dibuat Oleh</label>
 						<div class="col-sm-6">
 							<input type="text" class="form-control" name="pembuat" id="pembuat">
+							<small class="help-text" id="pembuat-feedback"></small>
 						</div>
-						<small class="help-text" id="pembuat-feedback"></small>
 					</div>
 					<div class="form-group row">
 						<label class="col-sm-2 col-form-label">Klasifikasi <sup class="text-red">*</sup></label>
@@ -311,8 +311,8 @@
 				'url': "<?= site_url('user/page/dokumen-keluar/list') ?>",
 				'type': 'POST',
 				'data': {
-					bulan: <?= $filter_bulan ?>,
-					tahun: <?= $filter_tahun ?>
+					bulan: "<?= $filter_bulan ?>",
+					tahun: "<?= $filter_tahun ?>"
 				},
 			},
 			'ordering': false
@@ -326,17 +326,17 @@
 			$(this).next('.custom-file-label').html(fileName);
 		});
 
-		$('#jns_dokumen').on('change', function() {
-			if ($(this).val() == 3) {
-				$('#tujuan_lain').attr('disabled', false);
-				$('#li_tujuan').attr('disabled', true);
-				$('#li_tujuan-feedback').empty();
-			} else {
-				$('#tujuan_lain').attr('disabled', true);
-				$('#li_tujuan').attr('disabled', false);
-				$('#tujuan_lain-feedback').empty();
-			}
-		});
+		// $('#jns_dokumen').on('change', function() {
+		// 	if ($(this).val() == 3) {
+		// 		$('#tujuan_lain').attr('disabled', false);
+		// 		$('#li_tujuan').attr('disabled', true);
+		// 		$('#li_tujuan-feedback').empty();
+		// 	} else {
+		// 		$('#tujuan_lain').attr('disabled', true);
+		// 		$('#li_tujuan').attr('disabled', false);
+		// 		$('#tujuan_lain-feedback').empty();
+		// 	}
+		// });
 
 		// $('#perihal').on('keypress', function() {
 		// 	$(this).css('text-transform', 'uppercase');
@@ -461,13 +461,13 @@
 			success: function(data) {
 				$('#id_dok').val(data.id_dokumen);
 				$('#jns_dokumen').val(data.jns_dokumen);
-				if (data.jns_dokumen != 3) {
-					$('#tujuan_lain').attr('disabled', true);
-					$('#li_tujuan').val(data.unit_tujuan).change();
-				} else {
-					$('#li_tujuan').attr('disabled', true);
-					$('#tujuan_lain').val(data.unit_tujuan);
-				}
+				// // if (data.jns_dokumen != 3) {
+				// // 	$('#tujuan_lain').attr('disabled', true);
+				// // 	$('#li_tujuan').val(data.unit_tujuan).change();
+				// // } else {
+				// // 	$('#li_tujuan').attr('disabled', true);
+				// // 	$('#tujuan_lain').val(data.unit_tujuan);
+				// }
 				$('#perihal').val(data.perihal);
 				$('#pembuat').val(data.pembuat);
 				$('#lampiran').val(data.lampiran);
