@@ -45,11 +45,11 @@
 														<i class="fa fa-plus"></i> Tambah Surat
 													</button>
 												</td>
-												<td class="col-xs-5">
-													<?php $tahun = date('Y'); ?>
+												<td class="col-xs-5" style="width: 30%;">
 													<div class="select-wrapper">
 														<select class="form-control select2" name="bulan" id="filterBulan" tabindex="1" onchange="form.submit();" style="width:95%;">
 															<?php
+															echo '<option selected="selected" value="all"> Semua </option>';
 															foreach (list_bulan() as $key => $value) {
 																if ($key == $filter_bulan) {
 																	echo '<option selected="selected" value="' . $key . '"> Bulan ' . $value . '</option>';
@@ -61,14 +61,13 @@
 														</select>
 													</div>
 												</td>
-												<td class="col-xs-5">
-													<?php $tahun = date('Y'); ?>
-													<!-- <div class="select-wrapper" style="width:35%;"> -->
+												<td class="col-xs-5" style="width: 30%;">
+													<!-- <div class=" select-wrapper" style="width:35%;"> -->
 													<div class="select-wrapper">
 														<select class="form-control select2" name="tahun" id="filterBulan" tabindex="1" onchange="form.submit();" style="width:95%;">
 															<?php
 															$year_array = array();
-															for ($i = date('Y') - 2; $i <= date('Y'); $i++) {
+															for ($i = 2024; $i <= date('Y'); $i++) {
 																$year_array[$i] = $i;
 															}
 															foreach ($year_array as $value) {
@@ -97,7 +96,7 @@
 											<th>Tujuan</th>
 											<th style="width: 14%;">Tgl. Dibuat</th>
 											<th class="text-center" style="width: 5%;">Status</th>
-											<th class="col-md-3 text-center">Opsi</th>
+											<th class="text-center">Opsi</th>
 										</tr>
 									</thead>
 								</table>
@@ -158,26 +157,6 @@
 							<small class="help-text" id="kategori-feedback"></small>
 						</div>
 					</div>
-					<!-- <div class="form-group row">
-						<label class="col-sm-2 col-form-label">Unit Tujuan <sup class="text-red">*</sup></label>
-						<div class="col-sm-6">
-							<select class="form-control select2" name="li_tujuan[]" id="li_tujuan" multiple="multiple" style="width: 100%;">
-								<option disabled>-- Pilih --</option>
-								<?php foreach ($tujuan as $li) : ?>
-									<option value="<?= $li['kd_unit'] . ' - ' . $li['nm_unit'] ?>"><?= $li['kd_unit'] . ' - ' . $li['nm_unit'] ?></option>
-								<?php endforeach; ?>
-							</select>
-						</div>
-						<div class="offset-2 col-sm-10">
-							<small class="help-text" id="li_tujuan-feedback"></small>
-						</div>
-					</div>
-					<div class="form-group row">
-						<div class="offset-2 col-sm-6">
-							<input type="text" class="form-control" name="tujuan_lain" id="tujuan_lain" placeholder="Unit tujuan eksternal">
-							<small class="help-text" id="tujuan_lain-feedback"></small>
-						</div>
-					</div> -->
 					<div class="form-group row">
 						<label class="col-sm-2 col-form-label">Kepada <sup class="text-red">*</sup></label>
 						<div class="col-sm-6">
@@ -298,7 +277,15 @@
 <!-- Footer -->
 <?php $this->load->view('template/v_footer'); ?>
 <!-- End of Footer -->
-
+<!-- <script src="https://code.jquery.com/jquery-3.7.1.js"></script> -->
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.1.2/js/dataTables.buttons.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.1.2/js/buttons.dataTables.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.1.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.1.2/js/buttons.print.min.js"></script>
 <script>
 	var save_method = '';
 	$(document).ready(function() {
@@ -315,7 +302,12 @@
 					tahun: "<?= $filter_tahun ?>"
 				},
 			},
-			'ordering': false
+			'ordering': false,
+			'layout': {
+				'topStart': {
+					'buttons': ['excel', 'pdf', 'print']
+				}
+			}
 		});
 
 		$('input[type="file"]').on('change', function() {

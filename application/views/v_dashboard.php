@@ -29,30 +29,38 @@
 				<!-- Info boxes -->
 				<div class="row">
 
-					<div class="col-12 col-sm-6">
+					<!-- <div class="col-12 col-sm-6">
 						<div class="info-box mb-3">
-							<span class="info-box-icon bg-gradient-danger"><i class="fa fa-paper-plane"></i></span>
+							<span class="info-box-icon bg-gradient-success"><i class="fa fa-paper-plane"></i></span>
 
 							<div class="info-box-content">
-								<span class="info-box-text">Jumlah Surat Keluar</span>
+								<span class="info-box-text" style="font-size: 20px;">Jumlah Surat Keluar</span>
 								<h2 class="info-box-number"><?= number_format($dok_keluar) ?></h2>
 							</div>
-							<!-- /.info-box-content -->
 						</div>
-						<!-- /.info-box -->
-					</div>
+					</div> -->
 					<!-- /.col -->
-					<div class="col-12 col-sm-6">
-						<div class="info-box mb-3">
+					<!-- <div class="col-12 col-sm-6"> -->
+					<!-- <div class="info-box mb-3">
 							<span class="info-box-icon bg-gradient-success"><i class="fa fa-users"></i></span>
 
 							<div class="info-box-content">
 								<span class="info-box-text">Pembuat Surat</span>
 								<h2 class="info-box-number"><?= number_format($pegawai) ?></h2>
 							</div>
-							<!-- /.info-box-content -->
+						</div> -->
+					<!-- /.info-box -->
+					<!-- </div> -->
+					<div class="col-12">
+						<div class="small-box bg-info">
+							<div class="inner" style="text-align: center;">
+								<span style="font-size: 20px;">Jumlah Surat Keluar</span>
+								<h1><b>[<?= number_format($dok_keluar) ?>]</b></h1>
+							</div>
+							<div class="icon">
+								<i class="fa fa-paper-plane"></i>
+							</div>
 						</div>
-						<!-- /.info-box -->
 					</div>
 					<!-- /.col -->
 				</div>
@@ -101,7 +109,7 @@
 			enabled: false
 		},
 		title: {
-			text: 'Statistik Surat Keluar ' + <?= date('Y') ?>
+			text: 'STATISTIK SURAT KELUAR ' + <?= date('Y') ?>
 		},
 		yAxis: {
 			title: {

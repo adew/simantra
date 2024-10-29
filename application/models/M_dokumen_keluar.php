@@ -10,8 +10,8 @@ class M_dokumen_keluar extends CI_Model
 	*/
 
 	var $table = 'tbl_dok_keluar';
-	var $column_order = array(null, 'a.no_dokumen', 'a.perihal', 'c.nm_pegawai', 'b.jns_dokumen', 'd.jns_kategori', 'a.createDate', null);
-	var $column_search = array('a.no_dokumen', 'a.perihal', 'c.nm_pegawai', 'a.sts_dokumen', 'a.createDate', 'd.jns_kategori', 'a.unit_tujuan');
+	var $column_order = array(null, 'a.no_dokumen', 'a.perihal', 'b.jns_dokumen', 'd.jns_kategori', 'a.createDate', null);
+	var $column_search = array('b.jns_dokumen', 'a.no_dokumen', 'a.no_dokumen2', 'a.perihal', 'a.sts_dokumen', 'a.createDate', 'a.pembuat', 'd.jns_kategori', 'a.unit_tujuan', 'c.nm_unit');
 	var $order = array('a.no_dokumen' => 'desc');
 
 	function _get_datatable_query($bulan = '', $tahun = '', $username = '')
@@ -23,9 +23,17 @@ class M_dokumen_keluar extends CI_Model
 			->join('tbl_kategori d', 'a.kategori = d.id_kategori', 'left');
 
 		if ($username == 'admin') {
-			$array = array('YEAR(a.createDate)' => $tahun, 'MONTH(a.createDate)' => $bulan);
+			if ($bulan == 'all') {
+				$array = array('YEAR(a.createDate)' => $tahun);
+			} else {
+				$array = array('YEAR(a.createDate)' => $tahun, 'MONTH(a.createDate)' => $bulan);
+			}
 		} else {
-			$array = array('YEAR(a.createDate)' => $tahun, 'MONTH(a.createDate)' => $bulan, 'c.bagian' => $username);
+			if ($bulan == 'all') {
+				$array = array('YEAR(a.createDate)' => $tahun, 'c.bagian' => $username);
+			} else {
+				$array = array('YEAR(a.createDate)' => $tahun, 'MONTH(a.createDate)' => $bulan, 'c.bagian' => $username);
+			}
 		}
 
 		$this->db->where($array);
@@ -109,14 +117,37 @@ class M_dokumen_keluar extends CI_Model
 		$this->db->delete($this->table, $key);
 	}
 
-	public function get_data_chart($tahun)
+	public function get_data_chart($tahun, $username)
 	{
+		$where = "";
+		if ($username != 'admin')
+			$where = "AND b.bagian = '$username'";
 
-		$sql = "SELECT DATE_FORMAT(createDate, '%m') AS bulan, COUNT(id_dokumen) AS count FROM tbl_dok_keluar WHERE YEAR(createDate) = $tahun GROUP BY MONTH(createDate)";
+		$sql = "SELECT DATE_FORMAT(a.createDate, '%m') AS bulan, COUNT(a.id_dokumen) AS count FROM tbl_dok_keluar a
+		LEFT JOIN tbl_unit b
+		ON a.kd_unit= b.kd_unit
+		WHERE YEAR(a.createDate) = $tahun $where
+		GROUP BY MONTH(a.createDate)";
 
 		$query = $this->db->query($sql);
 
 		return $query->result_array();
+	}
+
+	public function get_jumlah_surat($tahun, $username)
+	{
+		$where = "";
+		if ($username != 'admin')
+			$where = "AND b.bagian = '$username'";
+
+		$sql = "SELECT * FROM tbl_dok_keluar a
+		LEFT JOIN tbl_unit b
+		ON a.kd_unit= b.kd_unit
+		WHERE YEAR(a.createDate) = $tahun $where";
+
+		$query = $this->db->query($sql);
+
+		return $query->num_rows();
 	}
 
 	public function lihat_nomor($tahun)

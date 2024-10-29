@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 27, 2024 at 02:38 AM
+-- Generation Time: Oct 29, 2024 at 11:50 AM
 -- Server version: 10.4.18-MariaDB
 -- PHP Version: 8.0.3
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `db_e-filing`
+-- Database: `db_simantra`
 --
 
 -- --------------------------------------------------------
@@ -56,23 +56,16 @@ CREATE TABLE `tbl_dok_keluar` (
   `dari` varchar(25) NOT NULL,
   `unit_tujuan` text NOT NULL,
   `perihal` text NOT NULL,
-  `pembuat` int(11) NOT NULL,
+  `pembuat` varchar(10) NOT NULL,
   `lampiran` int(11) NOT NULL,
   `kategori` char(25) NOT NULL,
   `sts_dokumen` varchar(50) NOT NULL,
   `catatan` text DEFAULT NULL,
   `path_folder` varchar(50) DEFAULT NULL,
   `file_dokumen` text DEFAULT NULL,
-  `createDate` datetime NOT NULL
+  `createDate` datetime NOT NULL,
+  `kd_unit` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `tbl_dok_keluar`
---
-
-INSERT INTO `tbl_dok_keluar` (`id_dokumen`, `no_dokumen`, `no_dokumen2`, `jns_dokumen`, `dari`, `unit_tujuan`, `perihal`, `pembuat`, `lampiran`, `kategori`, `sts_dokumen`, `catatan`, `path_folder`, `file_dokumen`, `createDate`) VALUES
-(1, '0001', '9999/6767/ttt', 1, 'PTA', 'a:1:{i:0;s:9:\"Daere 999\";}', 'Kerja bakti', 1, 0, '1', 'Diterima', NULL, 'berkas-keluar/2024-10', 'a946a0448b133a2b96fc693b6d4466bb2.pdf', '2024-07-17 02:06:22'),
-(2, '0002', 'pppp/6666', 2, 'PTA', 'a:1:{i:0;s:10:\"Para Camat\";}', 'Peresmian', 3, 0, '1', 'Diterima', NULL, 'berkas-keluar/2024-10', 'a946a0448b133a2b96fc693b6d4466bb1.pdf', '2024-10-26 23:11:12');
 
 -- --------------------------------------------------------
 
@@ -97,14 +90,6 @@ CREATE TABLE `tbl_dok_masuk` (
   `tgl_diterima` date NOT NULL,
   `createDate` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `tbl_dok_masuk`
---
-
-INSERT INTO `tbl_dok_masuk` (`id_dokumen`, `no_dokumen`, `jns_dokumen`, `dari`, `perihal`, `lampiran`, `kategori`, `tgl_dokumen`, `tgl_disposisi`, `disposisi`, `catatan`, `path_folder`, `file_dokumen`, `tgl_diterima`, `createDate`) VALUES
-(1, '01/0003-1/DSG', 1, 'DSG - DISTRIBUTION STRATEGY GROUP', 'UNDANGAN RAPAT KOORDINASI PERIHAL RENCANA SOSIALISASI WHOLESALE RETAIL &AMP; RETAIL RETAIL KEPADA CABANG EX BNIS &AMP; EX BRIS', 0, 1, '2021-02-02', '2021-02-02', 'a:1:{i:0;s:19:\"Erik Mahfud Fahtoni\";}', NULL, NULL, NULL, '2021-02-02', '2021-02-02 15:27:41'),
-(2, '1234/SDFDS.SDF', 3, 'RRG - RETAIL RISK GROUP', 'SURAT KELUAR', 3, 1, '2024-10-19', '2024-10-19', 'a:1:{i:0;s:13:\"Okky F Achamd\";}', NULL, 'berkas-masuk/2024-10', 'a946a0448b133a2b96fc693b6d4466bb.pdf', '2024-10-19', '2024-10-19 05:00:01');
 
 -- --------------------------------------------------------
 
@@ -146,7 +131,7 @@ CREATE TABLE `tbl_jns_dokumen` (
 
 INSERT INTO `tbl_jns_dokumen` (`id_jns_dokumen`, `jns_dokumen`, `keterangan`, `counter_dokumen`, `createDate`) VALUES
 (1, 'Penting', 'Bersifat Penting', 1, '2021-01-27 00:00:00'),
-(2, 'Biasa', 'Bersifat Biasa', 2, '2021-01-27 00:00:00');
+(2, 'Biasa', 'Bersifat Biasa', 1, '2021-01-27 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -200,10 +185,23 @@ INSERT INTO `tbl_pegawai` (`id_pegawai`, `nm_pegawai`, `id_jabatan`, `createDate
 
 CREATE TABLE `tbl_unit` (
   `no` int(11) NOT NULL,
-  `kd_unit` varchar(50) NOT NULL,
-  `nm_unit` text NOT NULL,
+  `kd_unit` varchar(10) NOT NULL,
+  `nm_unit` varchar(100) NOT NULL,
+  `bagian` varchar(100) NOT NULL,
   `createDate` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tbl_unit`
+--
+
+INSERT INTO `tbl_unit` (`no`, `kd_unit`, `nm_unit`, `bagian`, `createDate`) VALUES
+(1, 'PH', 'Panmud Hukum', 'kepaniteraan', '2024-10-29 02:58:34'),
+(2, 'PB', 'Panmud Banding', 'kepaniteraan', '2024-10-29 02:58:34'),
+(3, 'UM', 'Umum', 'kesekretariatan', '2024-10-29 03:18:04'),
+(4, 'KPG', 'Kepegawaian dan TI', 'kesekretariatan', '2024-10-29 05:18:55'),
+(5, 'KEU', 'Keuangan dan Pelaporan', 'kesekretariatan', '2024-10-29 05:18:55'),
+(6, 'PPG', 'Perencanaan dan Program', 'kesekretariatan', '2024-10-29 05:21:03');
 
 -- --------------------------------------------------------
 
@@ -300,7 +298,7 @@ ALTER TABLE `tbl_config`
 -- AUTO_INCREMENT for table `tbl_dok_keluar`
 --
 ALTER TABLE `tbl_dok_keluar`
-  MODIFY `id_dokumen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_dokumen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `tbl_dok_masuk`
@@ -336,7 +334,7 @@ ALTER TABLE `tbl_pegawai`
 -- AUTO_INCREMENT for table `tbl_unit`
 --
 ALTER TABLE `tbl_unit`
-  MODIFY `no` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `no` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tbl_user`
