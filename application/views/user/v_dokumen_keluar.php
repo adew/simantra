@@ -90,13 +90,13 @@
 								<table class="table table-bordered table-hover" id="table" style="width: 100%;">
 									<thead>
 										<tr>
-											<th class="text-center" style="width: 4%;">#</th>
-											<th class="text-center" style="width: 9%;">Jenis Surat</th>
+											<th class="text-center">#</th>
+											<th class="text-center">Jenis Surat</th>
 											<th class="text-center">Detail</th>
 											<th class="text-center">Tujuan</th>
-											<th class="text-center" style="width: 16%;">Tgl. Dibuat</th>
-											<th class="text-center" style="width: 5%;">Status</th>
-											<th class="text-center" style="width: 14%;">Opsi</th>
+											<th class="text-center">Tgl. Dibuat</th>
+											<th class="text-center">Status</th>
+											<th class="text-center">Opsi</th>
 										</tr>
 									</thead>
 								</table>
@@ -303,7 +303,7 @@
 				},
 			},
 			'ordering': false,
-			'paging':true,
+			'paging': true,
 			'layout': {
 				'topStart': {
 					'buttons': ['excel', 'pdf', 'print']

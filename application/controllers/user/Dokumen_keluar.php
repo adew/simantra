@@ -112,7 +112,7 @@ class Dokumen_keluar extends CI_Controller
 			$row = array();
 			$row[] = '<center>' . $no++ . '</center>';
 
-			$jns_dokumen = '<span style="white-space: pre-line">' . $li['jns_kategori'] . '<br>&nbsp;</span>';
+			$jns_dokumen = '<span style="white-space: pre-line">' . $li['jns_kategori'] . '&nbsp;<br></span>';
 			$jns_dokumen .= $li['jns_dokumen'] != 'Biasa' ? '<span class="badge badge-dark">' . $li['jns_dokumen'] . '</span>' : '<span class="badge badge-dark">' . $li['jns_dokumen'] . '</span>';
 			$row[] = $jns_dokumen;
 			if (empty($li['no_dokumen'])) {
@@ -132,26 +132,29 @@ class Dokumen_keluar extends CI_Controller
 			$date = explode(' ', $li['createDate']);
 			$row[] = '<span>' . tgl_indo($date[0]) . ' | ' . $date[1] . '&nbsp;<br>Oleh: ' . $li['pembuat'] . '&nbsp; <br>Bagian: ' . $li['nm_unit'] .  '</span>';
 
+			$sts = '<div class="text-center">';
 			if ($li['sts_dokumen'] == 'Proses') {
-				$row[] = '<span class="badge badge-warning">' . strtoupper($li['sts_dokumen']) . '</span>';
+				$sts .= '<span class="badge badge-warning">' . strtoupper($li['sts_dokumen']) . '</span>';
 			} else if ($li['sts_dokumen'] == 'Diterima') {
-				$row[] = '<span class="badge badge-success">' . strtoupper($li['sts_dokumen']) . '</span>';
+				$sts .= '<span class="badge badge-success">' . strtoupper($li['sts_dokumen']) . '</span>';
 			} else {
-				$row[] = '<span class="badge badge-danger">' . strtoupper($li['sts_dokumen']) . '</span>';
+				$sts .= '<span class="badge badge-danger">' . strtoupper($li['sts_dokumen']) . '</span>';
 			}
+			$sts .= '</div>';
+			$row[] = $sts;
 
-			$aksi = '<div class="text-center">';
+			$aksi = '<div class="text-right">';
 			// priview file before download
 			if ($li['sts_dokumen'] == 'Proses' && $this->username == 'admin')
-				$aksi .= '<span class="btn btn-success" title="Approval" style="cursor: pointer" onclick="approve(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-check-square"></i></span>&nbsp;';
+				$aksi .= '<span class="btn btn-sm btn-success" title="Approval" style="cursor: pointer" onclick="approve(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-check-square"></i></span>&nbsp;';
 
-			$download = $li['file_dokumen'] != null ? '<a href="' . base_url('assets/' . $li['path_folder'] . '/' . $li['file_dokumen']) . '" target="_blank" class="btn btn-info" title="Download" style="cursor: pointer"><i class="fa fa-download" style="color:white"></i></a>&nbsp;' : '';
+			$download = $li['file_dokumen'] != null ? '<a href="' . base_url('assets/' . $li['path_folder'] . '/' . $li['file_dokumen']) . '" target="_blank" class="btn btn-sm btn-info" title="Download" style="cursor: pointer"><i class="fa fa-download" style="color:white"></i></a>&nbsp;' : '';
 			$aksi .= $download;
 
 			// $aksi .= '<span class="btn btn-info" style="cursor: pointer" onclick="view(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-eye"></i></span>&nbsp;';
-			$aksi .= '<span class="btn btn-warning" title="Edit" style="cursor: pointer" onclick="sunting(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-edit"></i></span>&nbsp;';
+			$aksi .= '<span class="btn btn-sm btn-warning" title="Edit" style="cursor: pointer" onclick="sunting(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-edit"></i></span>&nbsp;';
 			if ($this->username == 'admin')
-				$aksi .= '<span class="btn btn-danger" title="Hapus" style="cursor: pointer" onclick="hapus(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-trash"></i></span>';
+				$aksi .= '<span class="btn btn-sm btn-danger" title="Hapus" style="cursor: pointer" onclick="hapus(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-trash"></i></span>';
 			$aksi .= '</div>';
 			$row[] = $aksi;
 
