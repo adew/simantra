@@ -51,6 +51,41 @@
 						</div> -->
 					<!-- /.info-box -->
 					<!-- </div> -->
+					 <?php if($this->session->userdata('username')=='admin'){?>
+					<div class="col-12 col-sm-4">
+						<div class="small-box bg-success">
+							<div class="inner" style="text-align: center;">
+								<span style="font-size: 20px;">Kesekretariatan</span>
+								<h1><b>[<?= number_format($kesekretariatan) ?>]</b></h1>
+							</div>
+							<div class="icon">
+								<i class="fa fa-paper-plane"></i>
+							</div>
+						</div>
+					</div>
+					<div class="col-12 col-sm-4">
+						<div class="small-box bg-warning">
+							<div class="inner" style="text-align: center;">
+								<span style="font-size: 20px;">Kepaniteraan</span>
+								<h1><b>[<?= number_format($kepaniteraan) ?>]</b></h1>
+							</div>
+							<div class="icon">
+								<i class="fa fa-paper-plane"></i>
+							</div>
+						</div>
+					</div>
+					<div class="col-12 col-sm-4">
+						<div class="small-box bg-info">
+							<div class="inner" style="text-align: center;">
+								<span style="font-size: 20px;">Jumlah Surat Keluar</span>
+								<h1><b>[<?= number_format($dok_keluar) ?>]</b></h1>
+							</div>
+							<div class="icon">
+								<i class="fa fa-paper-plane"></i>
+							</div>
+						</div>
+					</div>
+					<?php }else { ?>
 					<div class="col-12">
 						<div class="small-box bg-info">
 							<div class="inner" style="text-align: center;">
@@ -62,6 +97,7 @@
 							</div>
 						</div>
 					</div>
+					<?php } ?>
 					<!-- /.col -->
 				</div>
 				<div class="row">
@@ -98,6 +134,7 @@
 <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 
 <script type="text/javascript">
+	 <?php if($this->session->userdata('username')=='admin'){?>
 	Highcharts.chart('container-chart', {
 		chart: {
 			type: 'column'
@@ -109,7 +146,7 @@
 			enabled: false
 		},
 		title: {
-			text: 'STATISTIK SURAT KELUAR ' + <?= date('Y') ?>
+			text: 'STATISTIK SURAT KELUAR ' + "<?= date('Y') ?>"
 		},
 		yAxis: {
 			title: {
@@ -136,7 +173,102 @@
 				},
 			}
 		},
+		series: [
+                    <?php
+                    $series = array();
+                    foreach (array('kesekretariatan','kepaniteraan') as $kpelaku => $vpelaku) {
+                        $data = array();
+						foreach ($bulan as $kbulan => $vbulan) {
+							if (isset($jumlah[$kbulan][$vpelaku])) {
+								$data[] = (int) $jumlah[$kbulan][$vpelaku];
+							} else {
+								$data[] = 0;
+							}
+						}
+                        switch ($vpelaku) {
+                            case "kesekretariatan":
+                                $color = '#28a745';
+                                break;
+                            case "kepaniteraan":
+                                $color = '#ffc107';
+                                break;
+                        }
+                        $series[] = "{
+						showInLegend: false,
+								dataLabels: {
+								enabled: true,
+								rotation: 0,
+								color: '#000000',
+								align: 'center',
+								y: 0, // 10 pixels down from the top
+								style: {
+								fontSize: '20px',
+								fontFamily: 'helvetica, arial, sans-serif',
+								textShadow: false,
+								fontWeight: 'normal'
 
+							}
+						}, 
+						color: '" . $color . "', name: '" . strtoupper($vpelaku) . "', data: [" . implode(',', $data) . "]}";
+                    }
+                    echo implode(',', $series);
+                    ?>
+                ],
+		responsive: {
+			rules: [{
+				condition: {
+					maxWidth: 500
+				},
+				chartOptions: {
+					legend: {
+						layout: 'horizontal',
+						align: 'center',
+						verticalAlign: 'bottom'
+					}
+				}
+			}]
+		}
+
+	});
+	<?php }else{?>
+		Highcharts.chart('container-chart', {
+		chart: {
+			type: 'column'
+		},
+		tooltip: {
+			enabled: false
+		},
+		exporting: {
+			enabled: false
+		},
+		title: {
+			text: 'STATISTIK SURAT KELUAR ' + "<?= date('Y') ?>"
+		},
+		yAxis: {
+			title: {
+				text: 'Jumlah Surat'
+			}
+		},
+		xAxis: {
+			title: false,
+			categories: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+			crosshair: true
+		},
+		credits: {
+			enabled: false
+		},
+		legend: {
+			layout: 'vertical',
+			align: 'center',
+			verticalAlign: 'middle'
+		},
+		plotOptions: {
+			series: {
+				label: {
+					connectorAllowed: false
+				},
+			}
+		},
 		series: [{
 				showInLegend: false,
 				color: '#c2c7d0',
@@ -187,4 +319,5 @@
 		}
 
 	});
+	<?php }?>
 </script>

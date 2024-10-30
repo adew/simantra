@@ -120,14 +120,20 @@ class M_dokumen_keluar extends CI_Model
 	public function get_data_chart($tahun, $username)
 	{
 		$where = "";
-		if ($username != 'admin')
+		if ($username != 'admin'){
 			$where = "AND b.bagian = '$username'";
-
-		$sql = "SELECT DATE_FORMAT(a.createDate, '%m') AS bulan, COUNT(a.id_dokumen) AS count FROM tbl_dok_keluar a
-		LEFT JOIN tbl_unit b
-		ON a.kd_unit= b.kd_unit
-		WHERE YEAR(a.createDate) = $tahun $where
-		GROUP BY MONTH(a.createDate)";
+			$sql = "SELECT DATE_FORMAT(a.createDate, '%m') AS bulan, COUNT(a.id_dokumen) AS count FROM tbl_dok_keluar a
+			LEFT JOIN tbl_unit b
+			ON a.kd_unit= b.kd_unit
+			WHERE YEAR(a.createDate) = $tahun $where
+			GROUP BY MONTH(a.createDate)";
+		}else{
+			$sql = "SELECT DATE_FORMAT(a.createDate, '%m') AS bulan, COUNT(a.id_dokumen) AS count, b.bagian FROM tbl_dok_keluar a
+			LEFT JOIN tbl_unit b
+			ON a.kd_unit= b.kd_unit
+			WHERE YEAR(a.createDate) = $tahun $where
+			GROUP BY MONTH(a.createDate), b.bagian";
+		}
 
 		$query = $this->db->query($sql);
 
