@@ -100,10 +100,12 @@ class Dokumen_keluar extends CI_Controller
 		$filter_bulan = $this->input->post('bulan', true);
 		$tahun = $this->input->post('tahun', true);
 
-		$data['filter_bulan'] = !empty($filter_bulan) ? $filter_bulan : 'all';
-		$data['filter_tahun'] = !empty($tahun) ? $tahun : date('Y');
+		$param_bulan = !empty($filter_bulan) ? $filter_bulan : 'all';
+		$param_tahun = !empty($tahun) ? $tahun : date('Y');
+		// $data['filter_bulan'] = !empty($filter_bulan) ? $filter_bulan : 'all';
+		// $data['filter_tahun'] = !empty($tahun) ? $tahun : date('Y');
 
-		$list = $this->m_dok_keluar->get_datatables($data['filter_bulan'], $data['filter_tahun'], $this->username);
+		$list = $this->m_dok_keluar->get_datatables($param_bulan, $param_tahun, $this->username);
 		$data = array();
 		$no = $_POST['start'] + 1;
 		foreach ($list as $li) {
@@ -158,8 +160,9 @@ class Dokumen_keluar extends CI_Controller
 
 		$output = array(
 			'draw' => intval($_POST['draw']),
-			'recordsTotal' => $this->m_dok_keluar->get_all_data(),
-			'recordsFiltered' => $this->m_dok_keluar->count_filtered(),
+			// 'recordsTotal' => $this->m_dok_keluar->get_all_data($param_bulan, $param_tahun, $this->username),
+			'recordsTotal' => $this->m_dok_keluar->count_filtered($param_bulan, $param_tahun, $this->username),
+			'recordsFiltered' => $this->m_dok_keluar->count_filtered($param_bulan, $param_tahun, $this->username),
 			'data' => $data
 		);
 		echo json_encode($output);

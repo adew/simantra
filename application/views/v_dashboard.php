@@ -56,7 +56,7 @@
 						<div class="small-box bg-success">
 							<div class="inner" style="text-align: center;">
 								<span style="font-size: 20px;">Kesekretariatan</span>
-								<h1><b>[<?= number_format($kesekretariatan) ?>]</b></h1>
+								<h1><b><?= number_format($kesekretariatan) ?></b></h1>
 							</div>
 							<div class="icon">
 								<i class="fa fa-paper-plane"></i>
@@ -67,7 +67,7 @@
 						<div class="small-box bg-warning">
 							<div class="inner" style="text-align: center;">
 								<span style="font-size: 20px;">Kepaniteraan</span>
-								<h1><b>[<?= number_format($kepaniteraan) ?>]</b></h1>
+								<h1><b><?= number_format($kepaniteraan) ?></b></h1>
 							</div>
 							<div class="icon">
 								<i class="fa fa-paper-plane"></i>
@@ -78,7 +78,7 @@
 						<div class="small-box bg-info">
 							<div class="inner" style="text-align: center;">
 								<span style="font-size: 20px;">Jumlah Surat Keluar</span>
-								<h1><b>[<?= number_format($dok_keluar) ?>]</b></h1>
+								<h1><b><?= number_format($dok_keluar) ?></b></h1>
 							</div>
 							<div class="icon">
 								<i class="fa fa-paper-plane"></i>
@@ -90,7 +90,7 @@
 						<div class="small-box bg-info">
 							<div class="inner" style="text-align: center;">
 								<span style="font-size: 20px;">Jumlah Surat Keluar</span>
-								<h1><b>[<?= number_format($dok_keluar) ?>]</b></h1>
+								<h1><b><?= number_format($dok_keluar) ?></b></h1>
 							</div>
 							<div class="icon">
 								<i class="fa fa-paper-plane"></i>
@@ -146,7 +146,7 @@
 			enabled: false
 		},
 		title: {
-			text: 'STATISTIK SURAT KELUAR ' + "<?= date('Y') ?>"
+			text: 'STATISTIK SURAT KELUAR '+ "<?= date('Y') ?>"
 		},
 		yAxis: {
 			title: {
@@ -242,7 +242,7 @@
 			enabled: false
 		},
 		title: {
-			text: 'STATISTIK SURAT KELUAR ' + "<?= date('Y') ?>"
+			text: 'STATISTIK SURAT KELUAR<br>' +"<?= strtoupper($this->session->userdata('username'))?> "+ "<?= date('Y') ?>"
 		},
 		yAxis: {
 			title: {

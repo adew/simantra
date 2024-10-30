@@ -71,9 +71,9 @@ class M_dokumen_keluar extends CI_Model
 		}
 	}
 
-	function count_filtered()
+	function count_filtered($bulan, $tahun, $username)
 	{
-		$this->_get_datatable_query();
+		$this->_get_datatable_query($bulan, $tahun, $username);
 		$query = $this->db->get();
 		return $query->num_rows();
 	}
