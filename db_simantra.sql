@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 29, 2024 at 11:50 AM
+-- Generation Time: Nov 13, 2024 at 11:59 AM
 -- Server version: 10.4.18-MariaDB
 -- PHP Version: 8.0.3
 
@@ -130,7 +130,7 @@ CREATE TABLE `tbl_jns_dokumen` (
 --
 
 INSERT INTO `tbl_jns_dokumen` (`id_jns_dokumen`, `jns_dokumen`, `keterangan`, `counter_dokumen`, `createDate`) VALUES
-(1, 'Penting', 'Bersifat Penting', 1, '2021-01-27 00:00:00'),
+(1, 'Penting', 'Bersifat Penting', 2, '2021-01-27 00:00:00'),
 (2, 'Biasa', 'Bersifat Biasa', 1, '2021-01-27 00:00:00');
 
 -- --------------------------------------------------------
@@ -198,10 +198,10 @@ CREATE TABLE `tbl_unit` (
 INSERT INTO `tbl_unit` (`no`, `kd_unit`, `nm_unit`, `bagian`, `createDate`) VALUES
 (1, 'PH', 'Panmud Hukum', 'kepaniteraan', '2024-10-29 02:58:34'),
 (2, 'PB', 'Panmud Banding', 'kepaniteraan', '2024-10-29 02:58:34'),
-(3, 'UM', 'Umum', 'kesekretariatan', '2024-10-29 03:18:04'),
+(3, 'RPA', 'Rencana Program dan Anggaran', 'kesekretariatan', '2024-10-29 03:18:04'),
 (4, 'KPG', 'Kepegawaian dan TI', 'kesekretariatan', '2024-10-29 05:18:55'),
-(5, 'KEU', 'Keuangan dan Pelaporan', 'kesekretariatan', '2024-10-29 05:18:55'),
-(6, 'PPG', 'Perencanaan dan Program', 'kesekretariatan', '2024-10-29 05:21:03');
+(5, 'TURT', 'Tata Usaha dan Rumah Tangga', 'kesekretariatan', '2024-10-29 05:18:55'),
+(6, 'KEU', 'Keuangan dan Pelaporan', 'kesekretariatan', '2024-10-29 05:21:03');
 
 -- --------------------------------------------------------
 
@@ -298,7 +298,7 @@ ALTER TABLE `tbl_config`
 -- AUTO_INCREMENT for table `tbl_dok_keluar`
 --
 ALTER TABLE `tbl_dok_keluar`
-  MODIFY `id_dokumen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_dokumen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `tbl_dok_masuk`
