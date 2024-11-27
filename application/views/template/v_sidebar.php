@@ -56,11 +56,11 @@
 									<p>Jabatan</p>
 								</a>
 							</li> -->
-							<!-- <li class="nav-item">
-								<a href="<?= site_url('admin/page/pegawai') ?>" class="nav-link" id="pegawai">
-									<p>Pegawai</p>
+							<li class="nav-item">
+								<a href="<?= site_url('admin/page/pengguna') ?>" class="nav-link" id="pengguna">
+									<p>Pengguna</p>
 								</a>
-							</li> -->
+							</li>
 						</ul>
 					</li>
 				<?php endif; ?>

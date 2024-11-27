@@ -41,14 +41,28 @@
 				<?php endif; ?>
 
 				<form action="<?= site_url('login') ?>" method="post" autocomplete="off">
-					<div class="input-group mb-3">
+					<!-- <div class="input-group mb-3">
 						<input type="text" class="form-control" name="username" id="username" placeholder="Username" autofocus required>
+						<div class="input-group-append">
+							<div class="input-group-text">
+								<span class="fas fa-user"></span>
+							</div>
+						</div> -->
+					<!-- </div> -->
+					<div class="input-group mb-3">
+						<select class="form-control selectpicker" name="nm_user" id="kategori">
+							<option selected disabled>-- Pilih Pengguna --</option>
+							<?php foreach ($bagian as $li) : ?>
+								<option value="<?= $li['nm_user'] ?>"><?= $li['nm_user']; ?></option>
+							<?php endforeach; ?>
+						</select>
 						<div class="input-group-append">
 							<div class="input-group-text">
 								<span class="fas fa-user"></span>
 							</div>
 						</div>
 					</div>
+
 					<div class="input-group mb-3">
 						<input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
 						<div class="input-group-append">

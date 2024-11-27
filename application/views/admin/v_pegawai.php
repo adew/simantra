@@ -33,11 +33,11 @@
 							Setiap perubahan yang terjadi akan berpengaruh pada data yang berhubungan. Mohon berhati-hati ketika <b>mengubah</b> atau <b>menghapus</b> data.
 						</blockquote>
 					</div>
-					<div class="col-8">
+					<div class="col-12">
 						<div class="card">
 							<div class="card-header">
 								<button type="button" class="btn btn-xs btn-primary" onclick="show_modal()">
-									<i class="fa fa-plus"></i> Pegawai
+									<i class="fa fa-plus"></i> Pengguna
 								</button>
 							</div>
 							<div class="card-body">
@@ -45,8 +45,9 @@
 									<thead>
 										<tr>
 											<th class="text-center" style="width: 15px;">#</th>
-											<th>Nama Pegawai</th>
+											<th>Nama Pengguna</th>
 											<th>Unit</th>
+											<th>Password</th>
 											<th class="text-center">Opsi</th>
 										</tr>
 									</thead>
@@ -54,13 +55,14 @@
 										<?php foreach ($data as $key => $dt) : ?>
 											<tr>
 												<td class="text-center"><?= ($key + 1) ?></td>
-												<td><?= $dt['nm_pegawai']; ?></td>
-												<td><?= $dt['nm_jabatan']; ?></td>
+												<td><?= $dt['nm_user']; ?></td>
+												<td><?= ucfirst($dt['username']); ?></td>
+												<td><?= ucfirst($dt['password']); ?></td>
 												<td class="text-center">
-													<span class="btn btn-success" style="cursor: pointer" onclick="sunting('<?= $dt['id_pegawai'] ?>')">
+													<span class="btn btn-success" style="cursor: pointer" onclick="sunting('<?= $dt['id'] ?>')">
 														<i class="fa fa-edit"></i>
 													</span>
-													<span class="btn btn-danger" style="cursor: pointer" onclick="hapus('<?= $dt['id_pegawai'] ?>')">
+													<span class="btn btn-danger" style="cursor: pointer" onclick="hapus('<?= $dt['id'] ?>')">
 														<i class="fa fa-trash"></i>
 													</span>
 												</td>
@@ -86,32 +88,37 @@
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title">Form Pegawai</h5>
+				<h5 class="modal-title">Form Pengguna</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
 			<div class="modal-body">
 				<form id="form" autocomplete="off">
-					<input type="hidden" class="form-control" name="id_pegawai" id="id_pegawai">
+					<input type="hidden" class="form-control" name="id_user" id="id_user">
 					<div class="form-group row">
-						<label class="col-sm-2 col-form-label">Nama Pegawai</label>
+						<label class="col-sm-2 col-form-label">Nama Pengguna</label>
 						<div class="col-sm-6">
-							<input type="text" class="form-control" name="nm_pegawai" id="nm_pegawai">
+							<input type="text" class="form-control" name="nm_user" id="nm_user">
 							<span class="help-text"></span>
 						</div>
 					</div>
 					<div class="form-group row">
 						<label class="col-sm-2 col-form-label">Unit</label>
 						<div class="col-sm-6">
-							<select class="form-control selectpicker" name="li_jabatan" id="li_jabatan">
+							<select class="form-control selectpicker" name="username" id="username">
 								<option selected disabled>-- Please Select --</option>
-								<option value="1">KEPANITERAAN</option>
-								<option value="2">KESEKRETARIATAN</option>
-								<!-- <?php foreach ($li_jabatan as $li) : ?>
-									<option value="<?= $li['id_jabatan'] ?>"><?= $li['nm_jabatan']; ?></option>
-								<?php endforeach; ?> -->
+								<option value="admin">Administrator</option>
+								<option value="kepaniteraan">Kepaniteraan</option>
+								<option value="kesekretariatan">Kesekretariatan</option>
 							</select>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Password</label>
+						<div class="col-sm-6">
+							<input type="text" class="form-control" name="password" id="id_password">
+							<span class="help-text"></span>
 						</div>
 					</div>
 					<div class="form-group row">
@@ -164,21 +171,21 @@
 		$('.btn_save').text('Simpan');
 
 		$.ajax({
-			url: '<?= site_url('admin/page/pegawai/get/') ?>' + id,
+			url: '<?= site_url('admin/page/pengguna/get/') ?>' + id,
 			type: 'GET',
 			dataType: 'JSON',
 			success: function(data) {
-				$('#id_pegawai').val(data.id_pegawai);
-				$('#nm_pegawai').val(data.nm_pegawai);
-				$('#li_jabatan').selectpicker('val', data.id_jabatan);
+				$('#id_user').val(data.id);
+				$('#nm_user').val(data.nm_user);
+				$('#username').selectpicker('val', data.username);
 			}
 		});
 	}
 
 	function save_form() {
 		var url = '';
-		if (save_method == 'add') url = '<?= site_url('admin/page/pegawai/insert') ?>';
-		else url = '<?= site_url('admin/page/pegawai/update') ?>';
+		if (save_method == 'add') url = '<?= site_url('admin/page/pengguna/insert') ?>';
+		else url = '<?= site_url('admin/page/pengguna/update') ?>';
 
 		$.ajax({
 			url: url,
@@ -189,7 +196,7 @@
 				if (data.status === true) {
 					Swal.fire({
 						title: 'Berhasil',
-						text: 'Nama pegawai telah tersimpan',
+						text: 'Nama pengguna telah tersimpan',
 						icon: 'success',
 						timer: 2000,
 						showConfirmButton: false
@@ -222,13 +229,13 @@
 		}).then((result) => {
 			if (result.value) {
 				$.ajax({
-					url: "<?= site_url('admin/page/pegawai/delete/') ?>" + id,
+					url: "<?= site_url('admin/page/pengguna/delete/') ?>" + id,
 					type: "GET",
 					dataType: "JSON",
 					success: function(data) {
 						Swal.fire({
 							title: 'Berhasil',
-							text: 'Nama pegawai telah dihapus',
+							text: 'Nama pengguna telah dihapus',
 							icon: 'success',
 							timer: 2000,
 							showConfirmButton: false

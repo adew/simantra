@@ -96,11 +96,11 @@ $route['admin/page/jabatan/delete/(:num)'] = 'admin/jabatan/delete/$1';
 $route['admin/page/jabatan/get/(:num)'] = 'admin/jabatan/get_data/$1';
 
 // Pegawai
-$route['admin/page/pegawai'] = 'admin/pegawai';
-$route['admin/page/pegawai/insert'] = 'admin/pegawai/insert';
-$route['admin/page/pegawai/update'] = 'admin/pegawai/update';
-$route['admin/page/pegawai/delete/(:num)'] = 'admin/pegawai/delete/$1';
-$route['admin/page/pegawai/get/(:num)'] = 'admin/pegawai/get_data/$1';
+$route['admin/page/pengguna'] = 'admin/pegawai';
+$route['admin/page/pengguna/insert'] = 'admin/pegawai/insert';
+$route['admin/page/pengguna/update'] = 'admin/pegawai/update';
+$route['admin/page/pengguna/delete/(:num)'] = 'admin/pegawai/delete/$1';
+$route['admin/page/pengguna/get/(:num)'] = 'admin/pegawai/get_data/$1';
 
 // Dokumen Keluar
 $route['user/page/dokumen-keluar'] = 'user/dokumen_keluar';

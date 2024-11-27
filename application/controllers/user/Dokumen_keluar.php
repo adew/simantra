@@ -36,6 +36,10 @@ class Dokumen_keluar extends CI_Controller
 		$tahun = $this->input->post('tahun', true);
 		$data['filter_bulan'] = !empty($filter_bulan) ? $filter_bulan : 'all';
 		$data['filter_tahun'] = !empty($tahun) ? $tahun : date('Y');
+		$data['nama_user'] = $this->session->userdata('nama_user');
+
+		// print_r($data['nama_user']);
+		// die;
 
 		$page = 'user/v_dokumen_keluar';
 		$group = $this->m_config->read(['status' => 1])->row_array();
@@ -48,9 +52,9 @@ class Dokumen_keluar extends CI_Controller
 		$data['pembuat'] = $this->m_pegawai->show();
 
 		if ($this->username == "admin") {
-			$data['unit'] = $this->m_tujuan->show();
+			$data['unit'] = $this->m_login->show();
 		} else {
-			$data['unit'] = $this->m_tujuan->read(['bagian' => $this->username])->result_array();
+			$data['unit'] = $this->m_login->read(['username' => $this->username])->result_array();
 		}
 
 		$this->load->view($page, $data);
@@ -76,11 +80,11 @@ class Dokumen_keluar extends CI_Controller
 			}
 		}
 
-		if ($_FILES['file']['name'] == '') {
-			$data['inputerror'][] = 'file';
-			$data['error'][] = 'Bagian ini harus diisi';
-			$data['status'] = false;
-		}
+		// if ($_FILES['file']['name'] == '') {
+		// 	$data['inputerror'][] = 'file';
+		// 	$data['error'][] = 'Bagian ini harus diisi';
+		// 	$data['status'] = false;
+		// }
 
 
 		// if (!isset($_POST['li_tujuan'])) {
@@ -130,15 +134,18 @@ class Dokumen_keluar extends CI_Controller
 			$row[] = 'Kepada: <br>' . $exp;
 
 			$date = explode(' ', $li['createDate']);
-			$row[] = '<span>' . tgl_indo($date[0]) . ' | ' . $date[1] . '&nbsp;<br>Oleh: ' . $li['pembuat'] . '&nbsp; <br>Bagian: ' . $li['nm_unit'] .  '</span>';
+			$row[] = '<span>' . tgl_indo($date[0]) . ' | ' . $date[1] . '&nbsp;<br>Oleh: ' . $li['pembuat'] . '&nbsp; <br>Bagian: ' . $li['nm_user'] .  '</span>';
 
 			$sts = '<div class="text-center">';
 			if ($li['sts_dokumen'] == 'Proses') {
 				$sts .= '<span class="badge badge-warning">' . strtoupper($li['sts_dokumen']) . '</span>';
-			} else if ($li['sts_dokumen'] == 'Diterima') {
-				$sts .= '<span class="badge badge-success">' . strtoupper($li['sts_dokumen']) . '</span>';
-			} else {
+			} else if ($li['sts_dokumen'] == 'Diterima' && $li['file_dokumen'] == null) {
+				$sts .= '<span class="badge badge-success">' . strtoupper($li['sts_dokumen']) . '</span><br>';
+				$sts .= '<span class="badge badge-info">File belum diupload</span>';
+			} else if ($li['sts_dokumen'] == 'Ditolak') {
 				$sts .= '<span class="badge badge-danger">' . strtoupper($li['sts_dokumen']) . '</span>';
+			} else {
+				$sts .= '<span class="badge badge-success">SELESAI</span>';
 			}
 			$sts .= '</div>';
 			$row[] = $sts;
@@ -230,21 +237,24 @@ class Dokumen_keluar extends CI_Controller
 
 		$jml_data = $this->db->get('tbl_dok_keluar')->num_rows();
 		$no = (int) $jml_data + 1;
-		if ($no > 999) $cond = $no;
-		elseif ($no > 99) $cond = '0' . $no;
-		elseif ($no > 9) $cond = '00' . $no;
-		else $cond = '000' . $no;
+		// if ($no > 999) $cond = $no;
+		// elseif ($no > 99) $cond = '0' . $no;
+		// elseif ($no > 9) $cond = '00' . $no;
+		// else $cond = '000' . $no;
 
-		// set tahun terbitan
-		// $no_dok = substr($config['thn_dokumen'], 2, 1) - 2 . substr($config['thn_dokumen'], -1);
-		// // set counter nomor dokumen & kode dokumen
-		// $no_dok .= '/' . $cond . '-' . $dokumen['id_jns_dokumen'];
-		// // set kode group
-		// $no_dok .= '/' . $config['nm_group'];
-		// $no_dok = $cond;
 
+		$no_dok = input('nomor_dokumen');
+		if (!empty($no_dok)) {
+			$no_dok = $no_dok;
+			$sts_dok = 'Diterima';
+		} else {
+			$no_dok = "";
+			$sts_dok = 'Proses';
+		}
+
+		$userid = !empty(input('unit_satker')) ? input('unit_satker') : $this->session->userdata('id');
 		$data = array(
-			// 'no_dokumen' => $no_dok,
+			'no_dokumen' => $no_dok,
 			'no_dokumen2' => input('no_dokumen2'),
 			'jns_dokumen' => input('jns_dokumen'),
 			'dari' => $config['nm_group'],
@@ -254,9 +264,9 @@ class Dokumen_keluar extends CI_Controller
 			'createDate' => date("Y-m-d H:i:s"),
 			// 'lampiran' => input('lampiran') == '' ? 0 : input('lampiran'),
 			'kategori' => input('kategori'),
-			'sts_dokumen' => 'Proses',
+			'sts_dokumen' => $sts_dok,
 			'catatan' => input('catatan') == '' ? NULL : input('catatan'),
-			'kd_unit' => input('unit_satker'),
+			'kd_unit' => $userid
 		);
 
 
@@ -325,7 +335,7 @@ class Dokumen_keluar extends CI_Controller
 			'kategori' => input('kategori'),
 			// 'sts_dokumen' => 'Proses',
 			'catatan' => input('catatan') == '' ? NULL : input('catatan'),
-			'kd_unit' => input('unit_satker'),
+			// 'kd_unit' => input('unit_satker'),
 		);
 
 		$tujuan[] = input('tujuan_lain');

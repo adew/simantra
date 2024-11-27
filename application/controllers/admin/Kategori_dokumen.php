@@ -12,11 +12,11 @@ class Kategori_dokumen extends CI_Controller
 		$is_login = $this->session->userdata('is_login');
 
 		if ($is_login === true) {
-			$cek_role = $this->m_login->get_user($this->session->userdata('username'));
-			if ($cek_role['lv_user'] != $this->uri->segment('1')) {
-				session_destroy();
-				redirect(base_url());
-			}
+			// $cek_role = $this->m_login->get_user($this->session->userdata('username'));
+			// if ($cek_role['lv_user'] != $this->uri->segment('1')) {
+			// 	session_destroy();
+			// 	redirect(base_url());
+			// }
 		} else {
 			session_destroy();
 			redirect(base_url());

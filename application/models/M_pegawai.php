@@ -3,11 +3,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class M_pegawai extends CI_Model
 {
-	private $_table = 'tbl_pegawai';
+	private $_table = 'tbl_user';
 
 	public function show()
 	{
-		$data = $this->db->select('*')->from($this->_table . ' a')->join('tbl_jabatan b', 'a.id_jabatan = b.id_jabatan', 'left')->get()->result_array();
+		$data = $this->db->select('*')->from($this->_table)->get()->result_array();
 		return $data;
 	}
 
@@ -18,7 +18,7 @@ class M_pegawai extends CI_Model
 
 	public function read($key)
 	{
-		$data = $this->db->select('*')->from($this->_table . ' a')->join('tbl_jabatan b', 'a.id_jabatan = b.id_jabatan', 'left')->where($key)->get();
+		$data = $this->db->select('*')->from($this->_table)->where($key)->get();
 		return $data;
 	}
 

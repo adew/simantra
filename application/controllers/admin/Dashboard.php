@@ -57,9 +57,9 @@ class Dashboard extends CI_Controller
 		$list = $this->m_dok_keluar->get_data_chart($year, $this->username);
 		$surat_keluar = array();
 		foreach ($list as $row) {
-			if(isset($row['bagian'])){
-				$surat_keluar[ltrim($row['bulan'], '0')][$row['bagian']] = $row['count'];
-			}else{
+			if (isset($row['username'])) {
+				$surat_keluar[ltrim($row['bulan'], '0')][$row['username']] = $row['count'];
+			} else {
 				$surat_keluar[ltrim($row['bulan'], '0')] = $row['count'];
 			}
 		}

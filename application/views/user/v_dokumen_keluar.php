@@ -44,6 +44,11 @@
 													<button type="button" class="btn btn-xs btn-primary" onclick="show_modal()">
 														<i class="fa fa-plus"></i> Tambah Surat
 													</button>
+													<?php if ($this->session->userdata('lv_user') == 'admin') { ?>
+														<button type="button" class="btn btn-xs btn-success" onclick="show_modal(2)">
+															<i class="fa fa-plus"></i> Tambah Surat Terbang
+														</button>
+													<?php } ?>
 												</td>
 												<td class="col-xs-5" style="width: 30%;">
 													<div class="select-wrapper">
@@ -130,9 +135,6 @@
 						<label class="col-sm-2 col-form-label">Nomor Surat<sup class="text-red">*</sup></label>
 						<div class="col-sm-2">
 							<input type="text" class="form-control" name="nomor_dokumen" id="no-dokumen" placeholder="Nomor" readonly>
-							<!-- <small class="form-text text-muted">
-								<span style="color: blue;">Nomor surat akan terlihat setelah di approve oleh administrator</span>
-							</small> -->
 						</div>
 						<label class="col-sm-auto col-form-label"> / </label>
 						<div class="col-sm-4">
@@ -141,7 +143,7 @@
 						</div>
 						<div class="col-sm-3">
 							<small class="form-text text-muted">
-								<span style="color: blue;">Nomor surat akan terlihat setelah di approve oleh administrator</span>
+								<span id="nb-surat" style="color: blue;">Nomor surat akan terlihat setelah di approve oleh administrator</span>
 							</small>
 						</div>
 					</div>
@@ -171,49 +173,31 @@
 							<small class="help-text" id="perihal-feedback"></small>
 						</div>
 					</div>
-
-					<div class="form-group row">
-						<!-- <label class="col-sm-2 col-form-label">Dibuat Oleh <sup class="text-red">*</sup></label>
-						<div class="col-md-3">
-							<select class="form-control selectpicker" name="pembuat" id="pembuat" data-live-search="true">
-								<option selected disabled>-- Pilih --</option>
-								<?php foreach ($pembuat as $li) : ?>
-									<option value="<?= $li['id_pegawai'] ?>"><?= $li['nm_pegawai']; ?></option>
-								<?php endforeach; ?>
-							</select>
-							<small class="help-text" id="pembuat-feedback"></small>
-						</div> -->
-						<!-- <label class="col-sm-1 col-form-label">Tanggal <sup class="text-red">*</sup></label>
-						<div class="col-sm-2">
-							<div class="input-group date">
-								<div class="input-group-addon">
-									<i class="fa fa-calendar"></i>
-								</div>
-								<input type="text" name="tgl_surat" class="form-control pull-right date-picker" id="datepicker">
+					<?php $role = $this->session->userdata('lv_user');
+					if ($role != 'admin') { ?>
+						<div class="form-group row">
+							<label class="col-sm-2 col-form-label">Unit Satker</label>
+							<div class="col-sm-6">
+								<input type="text" value="<?= $nama_user; ?>" class="form-control" name="unit_satker" id="unit_satker" readonly>
+								<small class="help-text" id="unit_satker-feedback"></small>
 							</div>
-							<small class="help-text" id="tgl_surat-feedback"></small>
-						</div> -->
-					</div>
-
-					<!-- <div class="form-group row">
-						<label class="col-sm-2 col-form-label">Lampiran</label>
-						<div class="col-sm-1">
-							<input type="text" class="form-control" name="lampiran" id="lampiran" onkeypress="return CheckNumeric()">
 						</div>
-						<label class="col-sm-auto col-form-label">Lembar <span class="ml-3 text-muted">(kosongkan bila tidak ada lampiran)</span></label>
-					</div> -->
-					<div class="form-group row">
-						<label class="col-sm-2 col-form-label">Unit Satker <sup class="text-red">*</sup></label>
-						<div class="col-sm-6">
-							<select class="form-control selectpicker" name="unit_satker" id="unit_satker">
-								<option selected disabled>-- Pilih --</option>
-								<?php foreach ($unit as $li) : ?>
-									<option value="<?= $li['kd_unit'] ?>"><?= $li['nm_unit']; ?></option>
-								<?php endforeach; ?>
-							</select>
-							<small class="help-text" id="unit_satker-feedback"></small>
+					<?php } else { ?>
+						<div class="form-group row">
+							<label class="col-sm-2 col-form-label">Unit Satker <sup class="text-red">*</sup></label>
+							<div class="col-sm-6">
+								<select class="form-control selectpicker" name="unit_satker" id="unit_satker">
+									<option selected disabled>-- Pilih --</option>
+									<?php foreach ($unit as $li) :
+											if ($li['username'] != 'admin') { ?>
+											<option value="<?= $li['id'] ?>"><?= $li['nm_user']; ?></option>
+									<?php }
+										endforeach; ?>
+								</select>
+								<small class="help-text" id="unit_satker-feedback"></small>
+							</div>
 						</div>
-					</div>
+					<?php } ?>
 					<div class="form-group row">
 						<label class="col-sm-2 col-form-label">Dibuat Oleh</label>
 						<div class="col-sm-6">
@@ -246,7 +230,7 @@
 						</div>
 					</div> -->
 					<!-- <input type="hidden" value="Proses" name="sts_dokumen"> -->
-					<div class="form-group row">
+					<div id="file-upload" class="form-group row">
 						<label class="col-sm-2 col-form-label">File Upload<sup class="text-red">*</sup></label>
 						<div class="col-sm-6">
 							<div class="custom-file">
@@ -422,10 +406,13 @@
 		$('.selectpicker').selectpicker('refresh');
 	}
 
-	function show_modal() {
+	function show_modal(val) {
 		reset_form();
 		save_method = 'add';
 		$('#modal-title-name').text('Tambah')
+		$('#no-dokumen').attr('readonly', true);
+		$('#nb-surat').show();
+		$('#file-upload').hide();
 
 		$('#modal_form').modal('show');
 		$('.btn_save').css({
@@ -434,12 +421,18 @@
 		}).text('Simpan');
 		$('#tujuan_lain').attr('disabled', true);
 		$('#li_tujuan').attr('disabled', true);
+		if (val == 2) {
+			$('#no-dokumen').attr('readonly', false);
+			$('#nb-surat').hide();
+		}
 	}
 
 	function sunting(id) {
 		reset_form();
 		save_method = 'update';
-		$('#modal-title-name').text('Update')
+		$('#modal-title-name').text('Update');
+		$('#file-upload').show();
+		$('#no-dokumen').attr('readonly', true);
 
 		$('#modal_form').modal('show');
 		$('.btn_save').css({
@@ -468,7 +461,7 @@
 				$('#no-dokumen').val(data.no_dokumen);
 				$('#no-dokumen2').val(data.no_dokumen2);
 				$('#tujuan-lain').val(data.unit_tujuan);
-				$('#unit_satker').val(data.kd_unit);
+				$('#unit_satker').val(<?php $this->session->userdata('nama_user'); ?>);
 				// $('.custom-file-label').text(data.file_dokumen);
 				// $('#catatan').val(data.catatan);
 

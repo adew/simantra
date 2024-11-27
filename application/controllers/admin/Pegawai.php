@@ -13,11 +13,11 @@ class pegawai extends CI_Controller
 		$is_login = $this->session->userdata('is_login');
 
 		if ($is_login === true) {
-			$cek_role = $this->m_login->get_user($this->session->userdata('username'));
-			if ($cek_role['lv_user'] != $this->uri->segment('1')) {
-				session_destroy();
-				redirect(base_url());
-			}
+			// $cek_role = $this->m_login->get_user($this->session->userdata('username'));
+			// if ($cek_role['lv_user'] != $this->uri->segment('1')) {
+			// 	session_destroy();
+			// 	redirect(base_url());
+			// }
 		} else {
 			session_destroy();
 			redirect(base_url());
@@ -27,7 +27,7 @@ class pegawai extends CI_Controller
 	public function index()
 	{
 		$page = 'admin/v_pegawai';
-		$data['title'] = 'Data Master pegawai';
+		$data['title'] = 'Data Master Pengguna';
 		$data['data'] = $this->m_pegawai->show();
 		$data['li_jabatan'] = $this->m_jabatan->show();
 
@@ -41,14 +41,16 @@ class pegawai extends CI_Controller
 		$data['error'] = array();
 		$data['status'] = true;
 
-		if (input('nm_pegawai') == '') {
-			$data['inputerror'][] = 'nm_pegawai';
-			$data['error'][] = 'Nama pegawai harus diisi';
-			$data['status'] = false;
-		} else if (!preg_match('/^[a-zA-Z ]+$/', input('nm_pegawai'))) {
-			$data['inputerror'][] = 'nm_pegawai';
-			$data['error'][] = 'Nama pegawai tidak valid, haruf huruf alphabet';
-			$data['status'] = false;
+		$post = array(
+			'nm_user', 'username', 'password'
+		);
+
+		foreach ($post as $post) {
+			if (input($post) == '') {
+				$data['inputerror'][] = $post;
+				$data['error'][] = 'Bagian ini harus diisi';
+				$data['status'] = false;
+			}
 		}
 
 		if ($data['status'] === false) {
@@ -59,7 +61,7 @@ class pegawai extends CI_Controller
 
 	public function get_data($id)
 	{
-		$key['id_pegawai'] = $id;
+		$key['id'] = $id;
 		$data = $this->m_pegawai->read($key)->row_array();
 		echo json_encode($data);
 		exit;
@@ -68,10 +70,13 @@ class pegawai extends CI_Controller
 	public function insert()
 	{
 		$this->validasi();
+		$user = input('username') == 'admin' ? 'admin' : 'user';
 
 		$data = array(
-			'nm_pegawai' => input('nm_pegawai'),
-			'id_jabatan' => input('li_jabatan')
+			'nm_user' => input('nm_user'),
+			'username' => input('username'),
+			'password' => md5(input('password')),
+			'lv_user' => $user,
 		);
 		$this->m_pegawai->create($data);
 
@@ -83,15 +88,18 @@ class pegawai extends CI_Controller
 	{
 		$this->validasi();
 
-		$key['id_pegawai'] = input('id_pegawai');
+		$key['id'] = input('id_user');
+		$user = input('username') == 'admin' ? 'admin' : 'user';
 		$data = array(
-			'nm_pegawai' => input('nm_pegawai'),
-			'id_jabatan' => input('li_jabatan')
+			'nm_user' => input('nm_user'),
+			'username' => input('username'),
+			'password' => md5(input('password')),
+			'lv_user' => $user,
 		);
 		$this->m_pegawai->update($data, $key);
 
 		$title = 'Berhasil';
-		$text = 'Nama pegawai berhasil tersimpan';
+		$text = 'Nama pengguna berhasil tersimpan';
 		$icon = 'success';
 
 		echo json_encode(['status' => true, 'title' => $title, 'icon' => $icon, 'text' => $text]);
@@ -100,7 +108,7 @@ class pegawai extends CI_Controller
 
 	public function delete($id)
 	{
-		$key['id_pegawai'] = $id;
+		$key['id'] = $id;
 		$this->m_pegawai->delete($key);
 
 		echo json_encode(['status' => true]);

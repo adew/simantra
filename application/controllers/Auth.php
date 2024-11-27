@@ -11,14 +11,14 @@ class Auth extends CI_Controller
 
 	public function index()
 	{
+		$data['bagian'] = $this->m_login->show();
 		$data['page'] = 'v_login';
-
-		$this->load->view('v_login');
+		$this->load->view('v_login', $data);
 	}
 
 	public function login()
 	{
-		$username = input('username');
+		$username = input('nm_user');
 		$password = md5(input('password'));
 		// print_r($password);
 		// die;
@@ -27,6 +27,7 @@ class Auth extends CI_Controller
 		if ($check > 0) {
 			$user = $this->m_login->get_user($username);
 			$sess = array(
+				'id' => $user['id'],
 				'username' => $user['username'],
 				'nama_user' => $user['nm_user'],
 				'lv_user' => $user['lv_user'],

@@ -11,15 +11,15 @@ class M_dokumen_keluar extends CI_Model
 
 	var $table = 'tbl_dok_keluar';
 	var $column_order = array(null, 'a.no_dokumen', 'a.perihal', 'b.jns_dokumen', 'd.jns_kategori', 'a.createDate', null);
-	var $column_search = array('b.jns_dokumen', 'a.no_dokumen', 'a.no_dokumen2', 'a.perihal', 'a.sts_dokumen', 'a.createDate', 'a.pembuat', 'd.jns_kategori', 'a.unit_tujuan', 'c.nm_unit');
+	var $column_search = array('b.jns_dokumen', 'a.no_dokumen', 'a.no_dokumen2', 'a.perihal', 'a.sts_dokumen', 'a.createDate', 'a.pembuat', 'd.jns_kategori', 'a.unit_tujuan', 'c.nm_user');
 	var $order = array('a.no_dokumen' => 'desc');
 
 	function _get_datatable_query($bulan = '', $tahun = '', $username = '')
 	{
 		// $this->db->from($this->table);
-		$this->db->select('a.*, c.nm_unit, b.jns_dokumen, d.jns_kategori')->from($this->table . ' a')
+		$this->db->select('a.*, c.nm_user, b.jns_dokumen, d.jns_kategori')->from($this->table . ' a')
 			->join('tbl_jns_dokumen b', 'a.jns_dokumen = b.id_jns_dokumen', 'left')
-			->join('tbl_unit c', 'a.kd_unit = c.kd_unit', 'left')
+			->join('tbl_user c', 'a.kd_unit = c.id', 'left')
 			->join('tbl_kategori d', 'a.kategori = d.id_kategori', 'left');
 
 		if ($username == 'admin') {
@@ -30,9 +30,9 @@ class M_dokumen_keluar extends CI_Model
 			}
 		} else {
 			if ($bulan == 'all') {
-				$array = array('YEAR(a.createDate)' => $tahun, 'c.bagian' => $username);
+				$array = array('YEAR(a.createDate)' => $tahun, 'c.username' => $username);
 			} else {
-				$array = array('YEAR(a.createDate)' => $tahun, 'MONTH(a.createDate)' => $bulan, 'c.bagian' => $username);
+				$array = array('YEAR(a.createDate)' => $tahun, 'MONTH(a.createDate)' => $bulan, 'c.username' => $username);
 			}
 		}
 
@@ -120,19 +120,19 @@ class M_dokumen_keluar extends CI_Model
 	public function get_data_chart($tahun, $username)
 	{
 		$where = "";
-		if ($username != 'admin'){
-			$where = "AND b.bagian = '$username'";
+		if ($username != 'admin') {
+			$where = "AND b.username = '$username'";
 			$sql = "SELECT DATE_FORMAT(a.createDate, '%m') AS bulan, COUNT(a.id_dokumen) AS count FROM tbl_dok_keluar a
-			LEFT JOIN tbl_unit b
-			ON a.kd_unit= b.kd_unit
+			LEFT JOIN tbl_user b
+			ON a.kd_unit= b.id
 			WHERE YEAR(a.createDate) = $tahun $where
 			GROUP BY MONTH(a.createDate)";
-		}else{
-			$sql = "SELECT DATE_FORMAT(a.createDate, '%m') AS bulan, COUNT(a.id_dokumen) AS count, b.bagian FROM tbl_dok_keluar a
-			LEFT JOIN tbl_unit b
-			ON a.kd_unit= b.kd_unit
+		} else {
+			$sql = "SELECT DATE_FORMAT(a.createDate, '%m') AS bulan, COUNT(a.id_dokumen) AS count, b.username FROM tbl_dok_keluar a
+			LEFT JOIN tbl_user b
+			ON a.kd_unit= b.id
 			WHERE YEAR(a.createDate) = $tahun $where
-			GROUP BY MONTH(a.createDate), b.bagian";
+			GROUP BY MONTH(a.createDate), b.username";
 		}
 
 		$query = $this->db->query($sql);
@@ -144,11 +144,11 @@ class M_dokumen_keluar extends CI_Model
 	{
 		$where = "";
 		if ($username != 'admin')
-			$where = "AND b.bagian = '$username'";
+			$where = "AND b.username = '$username'";
 
 		$sql = "SELECT * FROM tbl_dok_keluar a
-		LEFT JOIN tbl_unit b
-		ON a.kd_unit= b.kd_unit
+		LEFT JOIN tbl_user b
+		ON a.kd_unit= b.id
 		WHERE YEAR(a.createDate) = $tahun $where";
 
 		$query = $this->db->query($sql);
