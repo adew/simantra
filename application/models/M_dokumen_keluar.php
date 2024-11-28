@@ -165,4 +165,15 @@ class M_dokumen_keluar extends CI_Model
 
 		return $query->row_array();
 	}
+
+	public function cek_file_upload($user_id)
+	{
+		$where = array(
+			'kd_unit' => $user_id,
+			'sts_dokumen' => 'Diterima',
+			'file_dokumen' => null
+		);
+		$cek = $this->db->get_where($this->table, $where);
+		return $cek->result_array();
+	}
 }

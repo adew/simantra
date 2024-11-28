@@ -27,12 +27,15 @@
 		<section class="content">
 			<div class="container-fluid">
 				<div class="row">
-					<!-- <div class="col-12">
-						<blockquote class="ml-0 mt-0">
-							<strong>Perhatian!</strong><br>
-							* <b>Nomor Surat</b> akan didapatkan setelah <i>Upload File</i> selesai.<br>
-						</blockquote>
-					</div> -->
+					<div class="col-12">
+						<?php if (isset($disable_button) == true) { ?>
+							<blockquote class="ml-0 mt-0">
+								<strong>Perhatian!</strong><br>
+								*<b>Maaf,</b> untuk sementara waktu akun anda tidak bisa untuk menambahkan surat dikarenakan ada file surat yang belum diupload. <br>
+								Silahkan upload file segera, agar akun anda bisa normal kembali.<br>
+							</blockquote>
+						<?php } ?>
+					</div>
 					<div class="col-12">
 						<div class="card">
 							<div class="card-header">
@@ -41,9 +44,12 @@
 										<tfoot>
 											<tr>
 												<td class="col-xs-2">
-													<button type="button" class="btn btn-xs btn-primary" onclick="show_modal()">
-														<i class="fa fa-plus"></i> Tambah Surat
-													</button>
+													<?php if (isset($disable_button) != true) { ?>
+														<button type="button" class="btn btn-xs btn-primary" onclick="show_modal()">
+															<i class="fa fa-plus"></i> Tambah Surat
+														</button>
+													<?php } ?>
+
 													<?php if ($this->session->userdata('lv_user') == 'admin') { ?>
 														<button type="button" class="btn btn-xs btn-success" onclick="show_modal(2)">
 															<i class="fa fa-plus"></i> Tambah Surat Terbang
@@ -173,31 +179,20 @@
 							<small class="help-text" id="perihal-feedback"></small>
 						</div>
 					</div>
-					<?php $role = $this->session->userdata('lv_user');
-					if ($role != 'admin') { ?>
-						<div class="form-group row">
-							<label class="col-sm-2 col-form-label">Unit Satker</label>
-							<div class="col-sm-6">
-								<input type="text" value="<?= $nama_user; ?>" class="form-control" name="unit_satker" id="unit_satker" readonly>
-								<small class="help-text" id="unit_satker-feedback"></small>
-							</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Unit Satker <sup class="text-red">*</sup></label>
+						<div class="col-sm-6">
+							<select class="form-control selectpicker" name="unit_satker" id="unit_satker">
+								<option selected disabled>-- Pilih --</option>
+								<?php foreach ($unit as $li) :
+									if ($li['username'] != 'admin') { ?>
+										<option value="<?= $li['id'] ?>"><?= $li['nm_user']; ?></option>
+								<?php }
+								endforeach; ?>
+							</select>
+							<small class="help-text" id="unit_satker-feedback"></small>
 						</div>
-					<?php } else { ?>
-						<div class="form-group row">
-							<label class="col-sm-2 col-form-label">Unit Satker <sup class="text-red">*</sup></label>
-							<div class="col-sm-6">
-								<select class="form-control selectpicker" name="unit_satker" id="unit_satker">
-									<option selected disabled>-- Pilih --</option>
-									<?php foreach ($unit as $li) :
-											if ($li['username'] != 'admin') { ?>
-											<option value="<?= $li['id'] ?>"><?= $li['nm_user']; ?></option>
-									<?php }
-										endforeach; ?>
-								</select>
-								<small class="help-text" id="unit_satker-feedback"></small>
-							</div>
-						</div>
-					<?php } ?>
+					</div>
 					<div class="form-group row">
 						<label class="col-sm-2 col-form-label">Dibuat Oleh</label>
 						<div class="col-sm-6">

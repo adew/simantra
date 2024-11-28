@@ -38,9 +38,22 @@ class Dokumen_keluar extends CI_Controller
 		$data['filter_tahun'] = !empty($tahun) ? $tahun : date('Y');
 		$data['nama_user'] = $this->session->userdata('nama_user');
 
-		// print_r($data['nama_user']);
-		// die;
+		$check_data = $this->m_dok_keluar->cek_file_upload($this->session->userdata('id'));
+		foreach ($check_data as $check) {
 
+			$dari  = date_create($check['createDate']); // waktu awal. format penulisan tahun-bulan-tanggal jam:menit:detik
+			$sampai = date_create(); // waktu sekarang. saat tutorial ini dibuat, yaitu : 30/1/2024 16:00:00
+			// menghitung perbedaan waktu. tanggal dari pada parameter pertama, tanggal sampai pada parameter kedua
+			$diff  = date_diff($dari, $sampai);
+			// menampilkan output hasil proses date_diff()
+			// Menampilkan selisih tahun
+			// echo $diff->d . ' Jam, ';
+
+			if ($diff->d > 2) {
+				$data['disable_button'] = true;
+				break;
+			}
+		}
 		$page = 'user/v_dokumen_keluar';
 		$group = $this->m_config->read(['status' => 1])->row_array();
 
@@ -54,7 +67,7 @@ class Dokumen_keluar extends CI_Controller
 		if ($this->username == "admin") {
 			$data['unit'] = $this->m_login->show();
 		} else {
-			$data['unit'] = $this->m_login->read(['username' => $this->username])->result_array();
+			$data['unit'] = $this->m_login->read(['id' => $this->session->userdata('id')])->result_array();
 		}
 
 		$this->load->view($page, $data);
@@ -150,7 +163,7 @@ class Dokumen_keluar extends CI_Controller
 			$sts .= '</div>';
 			$row[] = $sts;
 
-			$aksi = '<div class="text-right">';
+			$aksi = '<div class="text-center">';
 			// priview file before download
 			if ($li['sts_dokumen'] == 'Proses' && $this->username == 'admin')
 				$aksi .= '<span class="btn btn-sm btn-success" title="Approval" style="cursor: pointer" onclick="approve(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-check-square"></i></span>&nbsp;';
@@ -158,8 +171,11 @@ class Dokumen_keluar extends CI_Controller
 			$download = $li['file_dokumen'] != null ? '<a href="' . base_url('assets/' . $li['path_folder'] . '/' . $li['file_dokumen']) . '" target="_blank" class="btn btn-sm btn-info" title="Download" style="cursor: pointer"><i class="fa fa-download" style="color:white"></i></a>&nbsp;' : '';
 			$aksi .= $download;
 
-			// $aksi .= '<span class="btn btn-info" style="cursor: pointer" onclick="view(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-eye"></i></span>&nbsp;';
-			$aksi .= '<span class="btn btn-sm btn-warning" title="Edit" style="cursor: pointer" onclick="sunting(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-edit"></i></span>&nbsp;';
+			if ($li['sts_dokumen'] == 'Proses' && $this->username != 'admin') {
+				$aksi .= '';
+			} elseif ($this->session->userdata('id') == $li['kd_unit'] || $this->username == 'admin') {
+				$aksi .= '<span class="btn btn-sm btn-warning" title="Edit" style="cursor: pointer" onclick="sunting(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-edit"></i></span>&nbsp;';
+			}
 			if ($this->username == 'admin')
 				$aksi .= '<span class="btn btn-sm btn-danger" title="Hapus" style="cursor: pointer" onclick="hapus(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-trash"></i></span>';
 			$aksi .= '</div>';
@@ -362,7 +378,7 @@ class Dokumen_keluar extends CI_Controller
 		$this->m_dok_keluar->update($data, $key);
 
 		$title = 'Sukses';
-		$text = 'Dokumen telah berhasil diubah';
+		$text = 'Dokumen telah berhasil disimpan';
 		$icon = 'success';
 
 		echo json_encode(['status' => true, 'title' => $title, 'icon' => $icon, 'text' => $text]);
