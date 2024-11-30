@@ -58,14 +58,14 @@
 												<td><?= $dt['keterangan']; ?></td>
 												<td class="text-center">
 													<?php if ($dt['id_jns_dokumen'] > 3) : ?>
-														<span class="badge badge-success" style="cursor: pointer" onclick="sunting('<?= $dt['id_jns_dokumen'] ?>')">
+														<span class="badge badge-warning" style="cursor: pointer" onclick="sunting('<?= $dt['id_jns_dokumen'] ?>')">
 															<i class="fa fa-edit"></i>
 														</span>
 														<span class="badge badge-danger" style="cursor: pointer" onclick="hapus('<?= $dt['id_jns_dokumen'] ?>')">
 															<i class="fa fa-trash"></i>
 														</span>
 													<?php else : ?>
-													<span class="text-red"><i class="fa fa-ban"></i></span>
+														<span class="text-red"><i class="fa fa-ban"></i></span>
 													<?php endif; ?>
 												</td>
 											</tr>

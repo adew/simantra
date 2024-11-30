@@ -159,7 +159,8 @@ class M_dokumen_keluar extends CI_Model
 	public function lihat_nomor($tahun)
 	{
 
-		$sql = "SELECT no_dokumen FROM tbl_dok_keluar WHERE YEAR(createDate) = $tahun AND sts_dokumen = 'Diterima' ORDER BY no_dokumen DESC LIMIT 1";
+		// $sql = "SELECT no_dokumen FROM tbl_dok_keluar WHERE YEAR(createDate) = $tahun AND sts_dokumen = 'Diterima' OR sts_dokumen = 'Diperbaiki' ORDER BY no_dokumen DESC LIMIT 1";
+		$sql = "SELECT no_dokumen FROM tbl_dok_keluar WHERE YEAR(createDate) = $tahun AND no_dokumen <> '' ORDER BY no_dokumen DESC LIMIT 1";
 
 		$query = $this->db->query($sql);
 

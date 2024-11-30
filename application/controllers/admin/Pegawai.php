@@ -106,6 +106,17 @@ class pegawai extends CI_Controller
 		exit;
 	}
 
+	public function status()
+	{
+		$key['id'] = input('id');
+		$data['active'] = input('sts_user');
+
+		$this->m_pegawai->update($data, $key);
+
+		echo json_encode(['status' => true]);
+		exit;
+	}
+
 	public function delete($id)
 	{
 		$key['id'] = $id;

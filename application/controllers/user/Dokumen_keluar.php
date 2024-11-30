@@ -38,22 +38,28 @@ class Dokumen_keluar extends CI_Controller
 		$data['filter_tahun'] = !empty($tahun) ? $tahun : date('Y');
 		$data['nama_user'] = $this->session->userdata('nama_user');
 
-		$check_data = $this->m_dok_keluar->cek_file_upload($this->session->userdata('id'));
-		foreach ($check_data as $check) {
+		// $check_data = $this->m_dok_keluar->cek_file_upload($this->session->userdata('id'));
+		// foreach ($check_data as $check) {
 
-			$dari  = date_create($check['createDate']); // waktu awal. format penulisan tahun-bulan-tanggal jam:menit:detik
-			$sampai = date_create(); // waktu sekarang. saat tutorial ini dibuat, yaitu : 30/1/2024 16:00:00
-			// menghitung perbedaan waktu. tanggal dari pada parameter pertama, tanggal sampai pada parameter kedua
-			$diff  = date_diff($dari, $sampai);
-			// menampilkan output hasil proses date_diff()
-			// Menampilkan selisih tahun
-			// echo $diff->d . ' Jam, ';
+		// 	$dari  = date_create($check['createDate']); // waktu awal. format penulisan tahun-bulan-tanggal jam:menit:detik
+		// 	$sampai = date_create(); // waktu sekarang. saat tutorial ini dibuat, yaitu : 30/1/2024 16:00:00
+		// 	// menghitung perbedaan waktu. tanggal dari pada parameter pertama, tanggal sampai pada parameter kedua
+		// 	$diff  = date_diff($dari, $sampai);
+		// 	// menampilkan output hasil proses date_diff()
+		// 	// Menampilkan selisih tahun
+		// 	// echo $diff->d . ' Jam, ';
 
-			if ($diff->d > 2) {
-				$data['disable_button'] = true;
-				break;
-			}
+		// 	if ($diff->d > 2) {
+		// 		$data['disable_button'] = true;
+		// 		break;
+		// 	}
+		// }
+		$key['id'] = $this->session->userdata('id');
+		$check_active_user = $this->m_pegawai->read($key)->row_array();
+		if ($check_active_user['active'] == "no") {
+			$data['disable_button'] = true;
 		}
+
 		$page = 'user/v_dokumen_keluar';
 		$group = $this->m_config->read(['status' => 1])->row_array();
 
@@ -73,7 +79,7 @@ class Dokumen_keluar extends CI_Controller
 		$this->load->view($page, $data);
 	}
 
-	public function validasi()
+	public function validasi($action = '', $no_dok = "")
 	{
 		$data = array();
 		$data['inputerror'] = array();
@@ -105,6 +111,16 @@ class Dokumen_keluar extends CI_Controller
 		// 	$data['error'][] = 'Bagian ini harus diisi';
 		// 	$data['status'] = false;
 		// }
+		if ($action == 'insert') {
+			$key['no_dokumen'] = $no_dok;
+			$check_nomor = $this->m_dok_keluar->read($key)->num_rows();
+
+			if ($check_nomor > 0) {
+				$data['inputerror'][] = 'no_dokumen';
+				$data['error'][] = 'Nomor surat sudah ada, ganti dengan nomor yang lain';
+				$data['status'] = false;
+			}
+		}
 
 		if ($data['status'] === false) {
 			echo json_encode($data);
@@ -149,12 +165,19 @@ class Dokumen_keluar extends CI_Controller
 			$date = explode(' ', $li['createDate']);
 			$row[] = '<span>' . tgl_indo($date[0]) . ' | ' . $date[1] . '&nbsp;<br>Oleh: ' . $li['pembuat'] . '&nbsp; <br>Bagian: ' . $li['nm_user'] .  '</span>';
 
+			//STATUS DOKUMEN
 			$sts = '<div class="text-center">';
 			if ($li['sts_dokumen'] == 'Proses') {
 				$sts .= '<span class="badge badge-warning">' . strtoupper($li['sts_dokumen']) . '</span>';
 			} else if ($li['sts_dokumen'] == 'Diterima' && $li['file_dokumen'] == null) {
 				$sts .= '<span class="badge badge-success">' . strtoupper($li['sts_dokumen']) . '</span><br>';
 				$sts .= '<span class="badge badge-info">File belum diupload</span>';
+			} else if ($li['sts_dokumen'] == 'Diterima' && $li['file_dokumen'] != null) {
+				$sts .= '<span class="badge badge-success">' . strtoupper($li['sts_dokumen']) . '</span><br>';
+				$sts .= '<span class="badge badge-warning">Menunggu verifikasi admin</span>';
+			} else if ($li['sts_dokumen'] == 'Diperbaiki' && $li['file_dokumen'] != null) {
+				$sts .= '<span class="badge badge-success">' . strtoupper($li['sts_dokumen']) . '</span><br>';
+				$sts .= '<span class="badge badge-warning">File yang diupload salah</span>';
 			} else if ($li['sts_dokumen'] == 'Ditolak') {
 				$sts .= '<span class="badge badge-danger">' . strtoupper($li['sts_dokumen']) . '</span>';
 			} else {
@@ -163,19 +186,25 @@ class Dokumen_keluar extends CI_Controller
 			$sts .= '</div>';
 			$row[] = $sts;
 
+			//TOMBOL AKSI
 			$aksi = '<div class="text-center">';
-			// priview file before download
+			//status proses pengajuan nomor
 			if ($li['sts_dokumen'] == 'Proses' && $this->username == 'admin')
 				$aksi .= '<span class="btn btn-sm btn-success" title="Approval" style="cursor: pointer" onclick="approve(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-check-square"></i></span>&nbsp;';
+			//status verifikasi dokumen
+			if ($li['sts_dokumen'] == 'Diterima' && $li['file_dokumen'] != null && $this->username == 'admin')
+				$aksi .= '<span class="btn btn-sm btn-success" title="Verifkasi" style="cursor: pointer" onclick="verifikasi(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-check-square"></i></span>&nbsp;';
 
+			//file download
 			$download = $li['file_dokumen'] != null ? '<a href="' . base_url('assets/' . $li['path_folder'] . '/' . $li['file_dokumen']) . '" target="_blank" class="btn btn-sm btn-info" title="Download" style="cursor: pointer"><i class="fa fa-download" style="color:white"></i></a>&nbsp;' : '';
 			$aksi .= $download;
-
+			//Edit sesuai username
 			if ($li['sts_dokumen'] == 'Proses' && $this->username != 'admin') {
 				$aksi .= '';
 			} elseif ($this->session->userdata('id') == $li['kd_unit'] || $this->username == 'admin') {
 				$aksi .= '<span class="btn btn-sm btn-warning" title="Edit" style="cursor: pointer" onclick="sunting(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-edit"></i></span>&nbsp;';
 			}
+			//hapus hanya admin
 			if ($this->username == 'admin')
 				$aksi .= '<span class="btn btn-sm btn-danger" title="Hapus" style="cursor: pointer" onclick="hapus(\'' . $li['id_dokumen'] . '\')"><i class="fa fa-trash"></i></span>';
 			$aksi .= '</div>';
@@ -231,8 +260,6 @@ class Dokumen_keluar extends CI_Controller
 
 	public function insert()
 	{
-		$this->validasi();
-
 		// buat folder sesuai tahun dan bulan
 		$nm_folder = date('Y-m');
 		if (!is_dir('assets/berkas-keluar/' . $nm_folder)) {
@@ -249,24 +276,19 @@ class Dokumen_keluar extends CI_Controller
 		// $dokumen = $this->m_jns_dokumen->read(['id_jns_dokumen' => input('jns_dokumen')])->row_array();
 		$config = $this->m_config->read(['status' => 1])->row_array();
 
-		// $no = (int) $dokumen['counter_dokumen'] + 1;
-
-		$jml_data = $this->db->get('tbl_dok_keluar')->num_rows();
-		$no = (int) $jml_data + 1;
-		// if ($no > 999) $cond = $no;
-		// elseif ($no > 99) $cond = '0' . $no;
-		// elseif ($no > 9) $cond = '00' . $no;
-		// else $cond = '000' . $no;
-
-
-		$no_dok = input('nomor_dokumen');
-		if (!empty($no_dok)) {
-			$no_dok = $no_dok;
+		$no = input('nomor_dokumen');
+		if (!empty($no)) {
+			if ($no > 999) $cond = $no;
+			elseif ($no > 99) $cond = '0' . $no;
+			elseif ($no > 9) $cond = '00' . $no;
+			else $cond = '000' . $no;
+			$no_dok = $cond;
 			$sts_dok = 'Diterima';
 		} else {
 			$no_dok = "";
 			$sts_dok = 'Proses';
 		}
+		$this->validasi('insert', $no_dok);
 
 		$userid = !empty(input('unit_satker')) ? input('unit_satker') : $this->session->userdata('id');
 		$data = array(
@@ -300,9 +322,8 @@ class Dokumen_keluar extends CI_Controller
 		}
 
 		$this->db->trans_begin();
-		$this->m_jns_dokumen->update(['counter_dokumen' => $no], ['id_jns_dokumen' => input('jns_dokumen')]);
+		// $this->m_jns_dokumen->update(['counter_dokumen' => $no], ['id_jns_dokumen' => input('jns_dokumen')]);
 		$this->m_dok_keluar->create($data);
-
 		if ($this->db->trans_status() === TRUE) {
 			$this->db->trans_commit();
 
@@ -364,6 +385,7 @@ class Dokumen_keluar extends CI_Controller
 		if ($this->upload->do_upload('file')) {
 			$fileData = $this->upload->data();
 			$data['file_dokumen'] = $fileData['file_name'];
+			$data['sts_dokumen'] = 'Diterima';
 
 			// perikasa apakah path_folder pada database sudah ada atau belum
 			$path = $this->m_dok_keluar->read($key)->row_array();
@@ -393,6 +415,7 @@ class Dokumen_keluar extends CI_Controller
 
 		// $jml_data = $this->m_dok_keluar->read(['sts_dokumen' => 'Diterima'])->num_rows();
 		$jml_data = $this->m_dok_keluar->lihat_nomor($tahun);
+
 		if (empty($jml_data)) {
 			$jml_data = 0;
 		} else {
@@ -415,6 +438,17 @@ class Dokumen_keluar extends CI_Controller
 				'sts_dokumen' => $sts_dok
 			);
 		}
+		$this->m_dok_keluar->update($data, $key);
+
+		echo json_encode(['status' => true]);
+		exit;
+	}
+
+	public function statusverifikasi()
+	{
+		$key['id_dokumen'] = input('id');
+		$data['sts_dokumen'] = input('sts_dok');
+
 		$this->m_dok_keluar->update($data, $key);
 
 		echo json_encode(['status' => true]);

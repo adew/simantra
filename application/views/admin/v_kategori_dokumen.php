@@ -28,7 +28,7 @@
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col-12">
-						<blockquote class="ml-0 mt-0">
+						<blockquote class="ml-0 mt-0" style="font-size: 16px;">
 							<strong>Perhatian!</strong><br>
 							Setiap perubahan yang terjadi akan berpengaruh pada data yang berhubungan. Mohon berhati-hati ketika <b>mengubah</b> atau <b>menghapus</b> data.
 						</blockquote>
@@ -57,7 +57,7 @@
 												<td><?= $dt['jns_kategori']; ?></td>
 												<td><?= $dt['keterangan']; ?></td>
 												<td class="text-center">
-													<span class="btn btn-success" style="cursor: pointer" onclick="sunting('<?= $dt['id_kategori'] ?>')">
+													<span class="btn btn-warning" style="cursor: pointer" onclick="sunting('<?= $dt['id_kategori'] ?>')">
 														<i class="fa fa-edit"></i>
 													</span>
 													<span class="btn btn-danger" style="cursor: pointer" onclick="hapus('<?= $dt['id_kategori'] ?>')">

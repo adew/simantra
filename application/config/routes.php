@@ -101,6 +101,7 @@ $route['admin/page/pengguna/insert'] = 'admin/pegawai/insert';
 $route['admin/page/pengguna/update'] = 'admin/pegawai/update';
 $route['admin/page/pengguna/delete/(:num)'] = 'admin/pegawai/delete/$1';
 $route['admin/page/pengguna/get/(:num)'] = 'admin/pegawai/get_data/$1';
+$route['admin/page/pengguna/status'] = 'admin/pegawai/status';
 
 // Dokumen Keluar
 $route['user/page/dokumen-keluar'] = 'user/dokumen_keluar';
@@ -110,6 +111,7 @@ $route['user/page/dokumen-keluar/update'] = 'user/dokumen_keluar/update';
 $route['user/page/dokumen-keluar/delete/(:num)'] = 'user/dokumen_keluar/delete/$1';
 $route['user/page/dokumen-keluar/get/(:num)'] = 'user/dokumen_keluar/get_data/$1';
 $route['user/page/dokumen-keluar/status'] = 'user/dokumen_keluar/status';
+$route['user/page/dokumen-keluar/statusverifikasi'] = 'user/dokumen_keluar/statusverifikasi';
 
 // Dokumen Masuk
 $route['user/page/dokumen-masuk'] = 'user/dokumen_masuk';

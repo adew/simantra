@@ -29,10 +29,9 @@
 				<div class="row">
 					<div class="col-12">
 						<?php if (isset($disable_button) == true) { ?>
-							<blockquote class="ml-0 mt-0">
+							<blockquote class="ml-0 mt-0" style="font-size: 16px;">
 								<strong>Perhatian!</strong><br>
-								*<b>Maaf,</b> untuk sementara waktu akun anda tidak bisa untuk menambahkan surat dikarenakan ada file surat yang belum diupload. <br>
-								Silahkan upload file segera, agar akun anda bisa normal kembali.<br>
+								*<b>Maaf,</b> untuk sementara waktu akun anda tidak bisa untuk menambahkan surat. Silahkan upload file segera, agar akun anda bisa normal kembali.<br>
 							</blockquote>
 						<?php } ?>
 					</div>
@@ -141,6 +140,7 @@
 						<label class="col-sm-2 col-form-label">Nomor Surat<sup class="text-red">*</sup></label>
 						<div class="col-sm-2">
 							<input type="text" class="form-control" name="nomor_dokumen" id="no-dokumen" placeholder="Nomor" readonly>
+							<small class="help-text" id="no_dokumen-feedback"></small>
 						</div>
 						<label class="col-sm-auto col-form-label"> / </label>
 						<div class="col-sm-4">
@@ -368,7 +368,7 @@
 							title: data.title,
 							text: data.text,
 							icon: data.icon,
-							timer: 2000,
+							timer: 2500,
 							showConfirmButton: false
 						}).then((result) => {
 							if (result.dismiss === Swal.DismissReason.timer) {
@@ -582,6 +582,66 @@
 						Swal.fire({
 							title: 'Ditolak',
 							text: 'Pengajuan nomor ditolak',
+							icon: 'error',
+							timer: 2500,
+							showConfirmButton: false
+						}).then((result) => {
+							if (result.dismiss === Swal.DismissReason.timer) {
+								location.reload();
+							}
+						});
+					}
+				});
+			}
+		})
+	}
+
+	function verifikasi(id) {
+		Swal.fire({
+			title: 'Verifikasi dokumen?',
+			icon: "warning",
+			showCancelButton: true,
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Terima',
+			cancelButtonText: 'Tolak',
+			allowOutsideClick: true
+		}).then((result) => {
+			if (result.value) {
+				$.ajax({
+					url: "<?= site_url('user/page/dokumen-keluar/statusverifikasi/') ?>",
+					type: "POST",
+					data: {
+						id: id,
+						sts_dok: 'Selesai'
+					},
+					dataType: "JSON",
+					success: function(data) {
+						Swal.fire({
+							title: 'Diterima',
+							text: 'Dokumen diterima',
+							icon: 'success',
+							timer: 2500,
+							showConfirmButton: false
+						}).then((result) => {
+							if (result.dismiss === Swal.DismissReason.timer) {
+								location.reload();
+							}
+						});
+					}
+				});
+			} else if (result.dismiss) {
+				$.ajax({
+					url: "<?= site_url('user/page/dokumen-keluar/statusverifikasi/') ?>",
+					type: "POST",
+					data: {
+						id: id,
+						sts_dok: 'Diperbaiki'
+					},
+					dataType: "JSON",
+					success: function(data) {
+						Swal.fire({
+							title: 'Ditolak',
+							text: 'Dokumen ditolak',
 							icon: 'error',
 							timer: 2500,
 							showConfirmButton: false

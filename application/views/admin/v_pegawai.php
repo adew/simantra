@@ -28,7 +28,7 @@
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col-12">
-						<blockquote class="ml-0 mt-0">
+						<blockquote class="ml-0 mt-0" style="font-size: 16px;">
 							<strong>Perhatian!</strong><br>
 							Setiap perubahan yang terjadi akan berpengaruh pada data yang berhubungan. Mohon berhati-hati ketika <b>mengubah</b> atau <b>menghapus</b> data.
 						</blockquote>
@@ -59,7 +59,18 @@
 												<td><?= ucfirst($dt['username']); ?></td>
 												<td><?= ucfirst($dt['password']); ?></td>
 												<td class="text-center">
-													<span class="btn btn-success" style="cursor: pointer" onclick="sunting('<?= $dt['id'] ?>')">
+													<?php if ($dt['lv_user'] != "admin") { ?>
+														<?php if ($dt['active'] == "yes") { ?>
+															<span class="btn btn-success" id="status-pengguna" style="cursor: pointer" onclick="ubah_status('<?= $dt['id'] ?>','<?= $dt['active'] ?>')">
+																Aktif
+															</span>
+														<?php } else { ?>
+															<span class="btn btn-danger" id="status-pengguna" style="cursor: pointer" onclick="ubah_status('<?= $dt['id'] ?>','<?= $dt['active'] ?>')">
+																Tidak aktif
+															</span>
+														<?php } ?>
+													<?php } ?>
+													<span class="btn btn-warning" style="cursor: pointer" onclick="sunting('<?= $dt['id'] ?>')">
 														<i class="fa fa-edit"></i>
 													</span>
 													<span class="btn btn-danger" style="cursor: pointer" onclick="hapus('<?= $dt['id'] ?>')">
@@ -248,5 +259,55 @@
 				});
 			}
 		})
+	}
+
+	function ubah_status(id, active) {
+		if (active == "no") {
+			$.ajax({
+				url: "<?= site_url('admin/page/pengguna/status/') ?>",
+				type: "POST",
+				data: {
+					id: id,
+					sts_user: 'yes'
+				},
+				dataType: "JSON",
+				success: function(data) {
+					Swal.fire({
+						title: 'Aktif',
+						text: 'Status pengguna berhasil diganti',
+						icon: 'success',
+						timer: 2000,
+						showConfirmButton: false
+					}).then((result) => {
+						if (result.dismiss === Swal.DismissReason.timer) {
+							location.reload();
+						}
+					});
+				}
+			});
+		} else if (active == "yes") {
+			$.ajax({
+				url: "<?= site_url('admin/page/pengguna/status/') ?>",
+				type: "POST",
+				data: {
+					id: id,
+					sts_user: 'no'
+				},
+				dataType: "JSON",
+				success: function(data) {
+					Swal.fire({
+						title: 'Tidak Aktif',
+						text: 'Status pengguna berhasil diganti',
+						icon: 'error',
+						timer: 2000,
+						showConfirmButton: false
+					}).then((result) => {
+						if (result.dismiss === Swal.DismissReason.timer) {
+							location.reload();
+						}
+					});
+				}
+			});
+		}
 	}
 </script>
