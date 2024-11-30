@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 28, 2024 at 07:11 AM
+-- Generation Time: Nov 30, 2024 at 03:56 AM
 -- Server version: 10.4.18-MariaDB
 -- PHP Version: 8.0.3
 
@@ -130,8 +130,8 @@ CREATE TABLE `tbl_jns_dokumen` (
 --
 
 INSERT INTO `tbl_jns_dokumen` (`id_jns_dokumen`, `jns_dokumen`, `keterangan`, `counter_dokumen`, `createDate`) VALUES
-(1, 'Penting', 'Bersifat Penting', 6, '2021-01-27 00:00:00'),
-(2, 'Biasa', 'Bersifat Biasa', 4, '2021-01-27 00:00:00');
+(1, 'Penting', 'Bersifat Penting', 8, '2021-01-27 00:00:00'),
+(2, 'Biasa', 'Bersifat Biasa', 2, '2021-01-27 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -198,10 +198,10 @@ CREATE TABLE `tbl_unit` (
 INSERT INTO `tbl_unit` (`no`, `kd_unit`, `nm_unit`, `bagian`, `createDate`) VALUES
 (1, 'PH', 'Panmud Hukum', 'kepaniteraan', '2024-10-29 02:58:34'),
 (2, 'PB', 'Panmud Banding', 'kepaniteraan', '2024-10-29 02:58:34'),
-(3, 'UM', 'Umum', 'kesekretariatan', '2024-10-29 03:18:04'),
+(3, 'RPA', 'Rencana Program dan Anggaran', 'kesekretariatan', '2024-10-29 03:18:04'),
 (4, 'KPG', 'Kepegawaian dan TI', 'kesekretariatan', '2024-10-29 05:18:55'),
-(5, 'KEU', 'Keuangan dan Pelaporan', 'kesekretariatan', '2024-10-29 05:18:55'),
-(6, 'PPG', 'Perencanaan dan Program', 'kesekretariatan', '2024-10-29 05:21:03');
+(5, 'TURT', 'Tata Usaha dan Rumah Tangga', 'kesekretariatan', '2024-10-29 05:18:55'),
+(6, 'KEU', 'Keuangan dan Pelaporan', 'kesekretariatan', '2024-10-29 05:21:03');
 
 -- --------------------------------------------------------
 
@@ -214,21 +214,22 @@ CREATE TABLE `tbl_user` (
   `username` varchar(25) NOT NULL,
   `nm_user` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `lv_user` varchar(25) NOT NULL
+  `lv_user` varchar(25) NOT NULL,
+  `active` varchar(10) NOT NULL DEFAULT 'yes'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tbl_user`
 --
 
-INSERT INTO `tbl_user` (`id`, `username`, `nm_user`, `password`, `lv_user`) VALUES
-(1, 'admin', 'Administrator', '21232f297a57a5a743894a0e4a801fc3', 'admin'),
-(2, 'kepaniteraan', 'Panitera Muda Hukum', 'cbebffc96a46a3e1da96033eff31ea03', 'user'),
-(3, 'kepaniteraan', 'Panitera Muda Banding', 'e7ed0c3114ac0358b78b9c7699f2ff4e', 'user'),
-(4, 'kesekretariatan', 'Rencana Program dan Anggaran', '4146c5b4cb5450f582601fe5a65e2732', 'user'),
-(5, 'kesekretariatan', 'Kepegawaian dan Teknologi Informasi', 'd45de20a488481327b5c7f2600b861cf', 'user'),
-(6, 'kesekretariatan', 'Tata Usaha dan Rumah Tangga', '82849c85acf1f4e6e4eec748f0aeddf4', 'user'),
-(7, 'kesekretariatan', 'Keuangan dan Pelaporan', 'a4151d4b2856ec63368a7c784b1f0a6e', 'user');
+INSERT INTO `tbl_user` (`id`, `username`, `nm_user`, `password`, `lv_user`, `active`) VALUES
+(1, 'admin', 'Administrator', '21232f297a57a5a743894a0e4a801fc3', 'admin', 'yes'),
+(2, 'kepaniteraan', 'Panmud Hukum', 'cbebffc96a46a3e1da96033eff31ea03', 'user', 'yes'),
+(3, 'kepaniteraan', 'Panmud Banding', 'e7ed0c3114ac0358b78b9c7699f2ff4e', 'user', 'yes'),
+(5, 'kesekretariatan', 'Rencana Program dan Anggaran', '4146c5b4cb5450f582601fe5a65e2732', 'user', 'yes'),
+(6, 'kesekretariatan', 'Kepegawaian dan TI', 'd45de20a488481327b5c7f2600b861cf', 'user', 'yes'),
+(7, 'kesekretariatan', 'Tata Usaha dan Rumah Tangga', '82849c85acf1f4e6e4eec748f0aeddf4', 'user', 'yes'),
+(8, 'kesekretariatan', 'Keuangan dan Pelaporan', 'a4151d4b2856ec63368a7c784b1f0a6e', 'user', 'yes');
 
 --
 -- Indexes for dumped tables
@@ -302,7 +303,7 @@ ALTER TABLE `tbl_config`
 -- AUTO_INCREMENT for table `tbl_dok_keluar`
 --
 ALTER TABLE `tbl_dok_keluar`
-  MODIFY `id_dokumen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id_dokumen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT for table `tbl_dok_masuk`
@@ -344,7 +345,7 @@ ALTER TABLE `tbl_unit`
 -- AUTO_INCREMENT for table `tbl_user`
 --
 ALTER TABLE `tbl_user`
-  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
